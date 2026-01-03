@@ -1072,6 +1072,16 @@ section {
   scroll-margin-top: 90px; /* offset for fixed header */
 }
 
+
+/* Precise anchor alignment fix for fixed header */
+:root {
+  --nav-height: 110px;
+}
+
+section[id] {
+  scroll-margin-top: var(--nav-height);
+}
+
 </style>
 
 <!-- Google Analytics 4 -->
