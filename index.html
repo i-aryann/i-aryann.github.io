@@ -1017,6 +1017,61 @@ button.loading .btn-text {
   }
 }
 
+
+/* Mobile resume button + nav actions */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mobile-resume {
+    display: none;
+    padding: 0.4rem 1rem;
+    border: 1px solid #D4AF37;
+    border-radius: 20px;
+    color: #D4AF37;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+@media (max-width: 768px) {
+    .mobile-resume {
+        display: inline-block;
+    }
+
+    nav {
+        position: absolute;
+        top: 80px;
+        right: 6%;
+        background: #000;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(212,175,55,0.3);
+    }
+
+    nav.active {
+        display: flex;
+    }
+}
+
+
+/* Fix anchor navigation vertical centering */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  align-items: flex-start !important;
+}
+
+section {
+  scroll-margin-top: 90px; /* offset for fixed header */
+}
+
 </style>
 
 <!-- Google Analytics 4 -->
@@ -1049,6 +1104,18 @@ button.loading .btn-text {
         <div class="logo">
             Aryan <span>| Data Scientist</span>
         </div>
+
+        <div class="nav-actions">
+            <a href="resume.pdf" class="resume-link mobile-resume" data-track="resume" target="_blank">
+                Resume
+            </a>
+            <div class="mobile-menu" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
         <nav>
             <a href="#hero">Home</a>
             <a href="#skills">Skills</a>
@@ -1660,6 +1727,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
+<script>
+  const mobileMenu = document.querySelector(".mobile-menu");
+  const nav = document.querySelector("nav");
+
+  if (mobileMenu && nav) {
+    mobileMenu.addEventListener("click", () => {
+      nav.classList.toggle("active");
+    });
+
+    nav.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", () => {
+        nav.classList.remove("active");
+      });
+    });
+  }
+</script>
+
 </body>
 </html>
 
