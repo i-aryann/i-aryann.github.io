@@ -1116,7 +1116,7 @@ section[id] {
         </div>
 
         <div class="nav-actions">
-            <a href="Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link mobile-resume" data-track="resume" target="_blank">
+            <a href="Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link mobile-resume" data-track="resume" target="_blank" href="Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer">
                 Resume
             </a>
             <div class="mobile-menu" aria-label="Toggle navigation">
@@ -1132,7 +1132,7 @@ section[id] {
             <a href="#projects">Projects</a>
             <a href="#experience">Experience</a>
             <a href="#contact">Contact</a>
-            <a href="#" class="resume-link" data-track="resume">View Resume</a>
+            <a href="#" class="resume-link" data-track="resume" href="Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer">View Resume</a>
         </nav>
         <div class="mobile-menu">
             <span></span>
@@ -1444,7 +1444,7 @@ section[id] {
 
     
 <div class="form-action">
-  <button type="submit"><span class="btn-text">Send Message</span><span class="spinner"></span></button>
+  <button type="submit"><span class="btn-text">Send Message</span><span class="spinner"></span></a>
   <span id="form-status" class="form-status">
     <span class="success-icon">✓</span>
     Message sent successfully. I’ll get back to you soon.
@@ -1628,7 +1628,7 @@ section[id] {
         // Smooth scroll for navigation links
         document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
-                e.preventDefault();
+                if(e.target.closest(".resume-link")) return;
                 const targetId = this.getAttribute('href');
                 if (targetId !== '#') {
                     const targetSection = document.querySelector(targetId);
@@ -1671,7 +1671,7 @@ section[id] {
 
         // Resume link - Replace with your actual resume URL
         document.querySelector('.resume-link').addEventListener('click', (e) => {
-            e.preventDefault();
+            if(e.target.closest(".resume-link")) return;
             // Option 1: Download resume
             // window.location.href = '/path/to/your/resume.pdf';
             
@@ -1689,7 +1689,7 @@ section[id] {
 
   if (form) {
     form.addEventListener("submit", async function (e) {
-      e.preventDefault();
+      if(e.target.closest(".resume-link")) return;
 
       const data = new FormData(form);
       form.querySelector("button").classList.add("loading");
