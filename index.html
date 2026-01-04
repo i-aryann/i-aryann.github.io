@@ -1209,6 +1209,21 @@ section[id] {
   }
 }
 
+
+/* ===== ABSOLUTE FINAL FIX: ALLOW ONLY ONE HAMBURGER ===== */
+@media (max-width: 768px) {
+  /* Hide ALL buttons that look like hamburger */
+  button {
+    display: none !important;
+  }
+
+  /* Re-enable ONLY the hamburger inside the main header */
+  .site-header button.hamburger {
+    display: block !important;
+    margin-left: auto;
+  }
+}
+
 </style>
 
 <!-- Google Analytics 4 -->
