@@ -1127,6 +1127,39 @@ section[id] {
   color: #D4AF37;
 }
 
+
+/* ===== HARD VISIBILITY FIX ===== */
+
+/* Mobile resume NEVER visible on desktop */
+.mobile-resume {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Desktop resume visible only on desktop */
+.desktop-resume {
+  display: inline-block !important;
+}
+
+/* Mobile breakpoint */
+@media (max-width: 768px) {
+  .desktop-resume {
+    display: none !important;
+  }
+  .mobile-resume {
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+}
+
+/* Prevent browser default link color */
+.resume-link,
+.resume-link:visited,
+.resume-link:active {
+  color: #D4AF37 !important;
+  text-decoration: none;
+}
+
 </style>
 
 <!-- Google Analytics 4 -->
