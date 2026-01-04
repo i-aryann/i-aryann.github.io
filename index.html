@@ -1,39 +1,4 @@
-<header>
-        <div class="logo">
-            Aryan <span>| Data Scientist</span>
-        </div>
-
-        <div class="nav-actions">
-            
-            <div class="mobile-menu" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-
-        <nav>
-            <a href="#hero">Home</a>
-            <a href="#skills">Skills</a>
-            <a href="#projects">Projects</a>
-            <a href="#experience">Experience</a>
-            <a href="#contact">Contact</a>
-            
-        
-<a href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf"
-   class="resume-link"
-   target="_blank"
-   rel="noopener noreferrer">
-  View Resume
-</a>
-
-</nav>
-        <div class="mobile-menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </header><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -139,6 +104,7 @@
             flex-direction: column;
             gap: 5px;
             cursor: pointer;
+            z-index: 101;
         }
 
         .mobile-menu span {
@@ -238,7 +204,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Overview Section */
+        /* Skills Grid */
         .overview {
             min-height: 100vh;
             padding: 10% 10%;
@@ -274,15 +240,6 @@
             line-height: 2;
         }
 
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-top: 5rem;
-            max-width: 1000px;
-        }
-
-        /* Skills Grid */
         .skills-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -439,7 +396,7 @@
             animation: scroll 2s infinite;
         }
 
-        /* Decorative shapes for desktop */
+        /* Decorative shapes */
         .hero-decoration {
             position: absolute;
             right: 10%;
@@ -813,80 +770,75 @@
             font-size: 0.95rem;
         }
 
-        /* Large Desktop Optimization */
-        @media (min-width: 1600px) {
-            .hero h1 {
-                font-size: 7.5rem;
-            }
-
-            .hero p {
-                font-size: 2.3rem;
-            }
-
-            .overview h2, .section-header h2 {
-                font-size: 5.5rem;
-            }
-
-            .cards-container {
-                max-width: 1600px;
-                gap: 3rem;
-            }
+        /* Form status */
+        .form-action {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
         }
 
-        /* Tablet and smaller */
-        @media (min-width: 1200px) and (max-width: 1599px) {
-            .hero h1 {
-                font-size: 6.5rem;
-            }
+        .form-status {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: #D4AF37;
+            font-size: 0.95rem;
+            font-weight: 500;
         }
 
-        /* Tablet and smaller */
-        @media (max-width: 1199px) {
-            header {
-                padding: 1.5rem 6%;
-            }
-
-            .hero {
-                padding: 0 6%;
-                padding-top: 100px;
-            }
-
-            .hero h1 {
-                font-size: 4.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.6rem;
-            }
-
-            .overview, .projects, .experience, .contact {
-                padding: 8% 6%;
-            }
-
-            .overview h2, .section-header h2 {
-                font-size: 3.5rem;
-            }
-
-            .cards-container, .skills-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 2rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-content {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            .hero-decoration {
-                width: 300px;
-                height: 300px;
-            }
+        .success-icon {
+            color: #2ecc71;
+            font-size: 1.1rem;
+            font-weight: 700;
         }
 
+        button.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        button .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0,0,0,0.2);
+            border-top: 2px solid #000;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        button.loading .spinner {
+            display: inline-block;
+        }
+
+        button.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .resume-link {
+            padding: 0.5rem 1.2rem;
+            border: 1px solid #D4AF37;
+            border-radius: 20px;
+            color: #D4AF37;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .resume-link:visited,
+        .resume-link:active {
+            color: #D4AF37;
+        }
+
+        section[id] {
+            scroll-margin-top: 110px;
+        }
+
+        /* Mobile */
         @media (max-width: 768px) {
             header {
                 padding: 1.5rem 6%;
@@ -894,15 +846,24 @@
 
             nav {
                 display: none;
+                position: absolute;
+                top: 70px;
+                right: 6%;
+                background: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 2rem;
+                border-radius: 12px;
+                border: 1px solid rgba(212,175,55,0.3);
+                box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            }
+
+            nav.active {
+                display: flex;
             }
 
             .mobile-menu {
                 display: flex;
-            }
-
-            .hero {
-                padding: 0 6%;
-                padding-top: 100px;
             }
 
             .hero h1 {
@@ -921,7 +882,7 @@
                 font-size: 2.5rem;
             }
 
-            .cards-container, .skills-grid {
+            .skills-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -947,285 +908,49 @@
 
             .timeline-item {
                 padding-left: 40px;
-                margin-bottom: 2.5rem;
             }
 
             .timeline-dot {
                 left: 1px;
-                width: 14px;
-                height: 14px;
             }
         }
-    
-/* Form success message (inline) */
-.form-action {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-}
+    </style>
 
-.form-status {
-  display: none;
-  align-items: center;
-  gap: 0.5rem;
-  color: #D4AF37;
-  font-size: 0.95rem;
-  font-weight: 500;
-}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1ZBM2E5QR"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Q1ZBM2E5QR');
+    </script>
 
-.success-icon {
-  color: #2ecc71;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-
-/* Button loading state */
-button.loading {
-  pointer-events: none;
-  opacity: 0.8;
-}
-
-button .spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(0,0,0,0.2);
-  border-top: 2px solid #000;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  display: none;
-}
-
-button.loading .spinner {
-  display: inline-block;
-}
-
-button.loading .btn-text {
-  display: none;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-
-/* Recruiter-focused mobile optimizations */
-@media (max-width: 768px) {
-  body {
-    line-height: 1.7;
-  }
-
-  .hero h1 {
-    font-size: 2.6rem;
-    line-height: 1.2;
-  }
-
-  .hero p {
-    font-size: 1.2rem;
-  }
-
-  .section-header h2,
-  .overview h2 {
-    font-size: 2.3rem;
-  }
-
-  p {
-    font-size: 1rem;
-  }
-
-  button {
-    min-height: 48px; /* thumb-friendly */
-    padding: 0.9rem 1.4rem;
-  }
-
-  .project-card {
-    padding: 2rem 1.8rem;
-  }
-
-  .project-links {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .contact {
-    padding-bottom: 20%;
-  }
-}
-
-
-/* Mobile resume button + nav actions */
-.nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.mobile-resume {
-    display: none;
-    padding: 0.4rem 1rem;
-    border: 1px solid #D4AF37;
-    border-radius: 20px;
-    color: #D4AF37;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
-@media (max-width: 768px) {
-    .mobile-resume {
-        display: inline-block;
-    }
-
-    nav {
-        position: absolute;
-        top: 80px;
-        right: 6%;
-        background: #000;
-        flex-direction: column;
-        gap: 1.5rem;
-        padding: 1.5rem;
-        border-radius: 12px;
-        border: 1px solid rgba(212,175,55,0.3);
-    }
-
-    nav.active {
-        display: flex;
-    }
-}
-
-
-/* Fix anchor navigation vertical centering */
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  align-items: flex-start !important;
-}
-
-section {
-  scroll-margin-top: 90px; /* offset for fixed header */
-}
-
-
-/* Precise anchor alignment fix for fixed header */
-:root {
-  --nav-height: 110px;
-}
-
-section[id] {
-  scroll-margin-top: var(--nav-height);
-}
-
-
-/* ===== HARD FIX: Allow clicks to pass to Resume ===== */
-.resume-link { position: relative; z-index: 100000; pointer-events: auto; }
-*::before, *::after { pointer-events: none; }
-
-
-/* ===== Resume button visibility & styling fix ===== */
-
-/* Base resume button styling */
-.resume-link {
-  padding: 0.5rem 1.2rem;
-  border: 1px solid #D4AF37;
-  border-radius: 20px;
-  color: #D4AF37;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-/* Hide mobile resume by default */
-.mobile-resume {
-  display: none !important;
-}
-
-/* Desktop-only resume */
-.desktop-resume {
-  display: inline-block;
-}
-
-/* Mobile behavior */
-@media (max-width: 768px) {
-  .desktop-resume {
-    display: none !important;
-  }
-  .mobile-resume {
-    display: inline-block !important;
-  }
-}
-
-/* Prevent default link blue/purple */
-.resume-link:visited,
-.resume-link:active {
-  color: #D4AF37;
-}
-
-
-/* ===== HEADER REFINEMENT: HEIGHT & VERTICAL ALIGNMENT ===== */
-.site-header {
-  height: 64px;              /* reduced overall height */
-}
-
-.header-inner {
-  padding: 0 2rem;           /* reduce vertical padding */
-  height: 100%;
-  align-items: center;       /* ensure perfect vertical centering */
-}
-
-.nav a,
-.resume-link {
-  line-height: 1;            /* remove extra vertical text space */
-  display: flex;
-  align-items: center;
-}
-
-
-/* ===== MOBILE: SINGLE HAMBURGER, RIGHT ALIGNED ===== */
-@media (max-width: 768px) {
-  .header-inner {
-    display: flex;
-    align-items: center;
-  }
-
-  .hamburger {
-    margin-left: auto;
-  }
-}
-
-</style>
-
-<!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1ZBM2E5QR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-Q1ZBM2E5QR');
-</script>
-
-
-<!-- SEO Optimization -->
-<meta name="description" content="Aryan Gupta | Data Scientist & Machine Learning Engineer. Portfolio showcasing ML, NLP, Analytics, and real-world projects.">
-<meta name="keywords" content="Aryan Gupta, Data Scientist, Machine Learning Engineer, Data Analyst, Portfolio, Python, SQL, NLP, Power BI">
-<meta name="author" content="Aryan Gupta">
-<meta property="og:title" content="Aryan Gupta | Data Scientist Portfolio">
-<meta property="og:description" content="Explore projects, skills, and experience of Aryan Gupta, Data Scientist & ML Engineer.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="">
-<meta property="og:image" content="">
-
+    <meta name="description" content="Aryan Gupta | Data Scientist & Machine Learning Engineer. Portfolio showcasing ML, NLP, Analytics, and real-world projects.">
 </head>
 <body>
-    <!-- Background Canvas -->
     <canvas id="backgroundCanvas" class="background-canvas"></canvas>
 
-    <!-- Header -->
-    
+    <header>
+        <div class="logo">
+            Aryan <span>| Data Scientist</span>
+        </div>
+
+        <nav id="mainNav">
+            <a href="#hero">Home</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#experience">Experience</a>
+            <a href="#contact">Contact</a>
+            <a href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link" target="_blank" rel="noopener noreferrer">View Resume</a>
+        </nav>
+
+        <div class="mobile-menu" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
 
     <div class="content-wrapper">
-        <!-- Hero Section -->
         <section class="hero" id="hero">
             <div class="hero-content">
                 <h1>Hi, I'm <span class="name">Aryan</span></h1>
@@ -1239,172 +964,114 @@ section[id] {
             <div class="scroll-indicator"></div>
         </section>
 
-        <!-- Skills Section -->
         <section class="overview" id="skills">
             <div class="overview-header">
                 <div class="overview-label">WHAT I DO</div>
                 <h2>Skills & Expertise</h2>
                 <p class="overview-description">
-                    Specialized in building end-to-end machine learning solutions, from data preprocessing to model deployment. Proficient in Python, deep learning frameworks, and cloud technologies.
+                    Specialized in building end-to-end machine learning solutions, from data preprocessing to model deployment.
                 </p>
             </div>
 
             <div class="skills-grid">
                 <div class="skill-category">
-                    <div class="skill-icon">
-                        <div class="icon-shape"></div>
-                    </div>
+                    <div class="skill-icon"><div class="icon-shape"></div></div>
                     <h3>Programming</h3>
                     <div class="skill-items">
-                        <span>Python</span>
-                        <span>SQL</span>
-                        <span>R</span>
+                        <span>Python</span><span>SQL</span><span>R</span>
                     </div>
                 </div>
-
                 <div class="skill-category">
-                    <div class="skill-icon">
-                        <div class="icon-shape"></div>
-                    </div>
+                    <div class="skill-icon"><div class="icon-shape"></div></div>
                     <h3>Data Analysis</h3>
                     <div class="skill-items">
-                        <span>Pandas</span>
-                        <span>NumPy</span>
-                        <span>EDA</span>
-                        <span>Feature Engineering</span>
+                        <span>Pandas</span><span>NumPy</span><span>EDA</span><span>Feature Engineering</span>
                     </div>
                 </div>
-
                 <div class="skill-category">
-                    <div class="skill-icon">
-                        <div class="icon-shape"></div>
-                    </div>
+                    <div class="skill-icon"><div class="icon-shape"></div></div>
                     <h3>Machine Learning</h3>
                     <div class="skill-items">
-                        <span>Regression</span>
-                        <span>Tree-based Models</span>
-                        <span>Neural Networks</span>
+                        <span>Regression</span><span>Tree-based Models</span><span>Neural Networks</span>
                     </div>
                 </div>
-
                 <div class="skill-category">
-                    <div class="skill-icon">
-                        <div class="icon-shape"></div>
-                    </div>
+                    <div class="skill-icon"><div class="icon-shape"></div></div>
                     <h3>Deep Learning / NLP</h3>
                     <div class="skill-items">
-                        <span>Transformers</span>
-                        <span>Embeddings</span>
-                        <span>Text Classification</span>
+                        <span>Transformers</span><span>Embeddings</span><span>Text Classification</span>
                     </div>
                 </div>
-
                 <div class="skill-category">
-                    <div class="skill-icon">
-                        <div class="icon-shape"></div>
-                    </div>
+                    <div class="skill-icon"><div class="icon-shape"></div></div>
                     <h3>Visualization & BI</h3>
                     <div class="skill-items">
-                        <span>Power BI</span>
-                        <span>Tableau</span>
-                        <span>Matplotlib</span>
-                        <span>Seaborn</span>
+                        <span>Power BI</span><span>Tableau</span><span>Matplotlib</span><span>Seaborn</span>
                     </div>
                 </div>
-
                 <div class="skill-category">
-                    <div class="skill-icon">
-                        <div class="icon-shape"></div>
-                    </div>
+                    <div class="skill-icon"><div class="icon-shape"></div></div>
                     <h3>MLOps & Deployment</h3>
                     <div class="skill-items">
-                        <span>Docker</span>
-                        <span>FastAPI</span>
-                        <span>MLflow</span>
-                        <span>CI/CD</span>
-                        <span>Cloud</span>
+                        <span>Docker</span><span>FastAPI</span><span>MLflow</span><span>CI/CD</span><span>Cloud</span>
                     </div>
                 </div>
-
                 <div class="skill-category">
-                    <div class="skill-icon">
-                        <div class="icon-shape"></div>
-                    </div>
+                    <div class="skill-icon"><div class="icon-shape"></div></div>
                     <h3>Databases</h3>
                     <div class="skill-items">
-                        <span>PostgreSQL</span>
-                        <span>MySQL</span>
-                        <span>MongoDB</span>
+                        <span>PostgreSQL</span><span>MySQL</span><span>MongoDB</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Projects Section -->
         <section class="projects" id="projects">
             <div class="section-header">
                 <div class="section-label">MY WORK</div>
                 <h2>Featured Projects</h2>
             </div>
-
             <div class="projects-grid">
-                <div class="project-card" data-track="project">
+                <div class="project-card">
                     <div class="project-number">01</div>
                     <h3>Customer Churn Prediction</h3>
-                    <p>Built a machine learning model to predict customer churn with 92% accuracy using ensemble methods. Implemented feature engineering and deployed via REST API.</p>
+                    <p>Built a machine learning model to predict customer churn with 92% accuracy using ensemble methods.</p>
                     <div class="project-tags">
-                        <span>Python</span>
-                        <span>XGBoost</span>
-                        <span>Flask</span>
-                        <span>AWS</span>
+                        <span>Python</span><span>XGBoost</span><span>Flask</span><span>AWS</span>
                     </div>
                 </div>
-
-                <div class="project-card" data-track="project">
+                <div class="project-card">
                     <div class="project-number">02</div>
                     <h3>Image Classification System</h3>
-                    <p>Developed a CNN-based image classifier using transfer learning on ResNet50. Achieved 95% accuracy on validation set with data augmentation techniques.</p>
+                    <p>Developed a CNN-based image classifier using transfer learning on ResNet50.</p>
                     <div class="project-tags">
-                        <span>PyTorch</span>
-                        <span>CNN</span>
-                        <span>Computer Vision</span>
-                        <span>Docker</span>
+                        <span>PyTorch</span><span>CNN</span><span>Computer Vision</span><span>Docker</span>
                     </div>
                 </div>
-
-                <div class="project-card" data-track="project">
+                <div class="project-card">
                     <div class="project-number">03</div>
                     <h3>NLP Sentiment Analyzer</h3>
-                    <p>Created a sentiment analysis tool using BERT transformers for social media data. Processed 1M+ tweets with real-time analysis capabilities.</p>
+                    <p>Created a sentiment analysis tool using BERT transformers for social media data.</p>
                     <div class="project-tags">
-                        <span>NLP</span>
-                        <span>BERT</span>
-                        <span>Transformers</span>
-                        <span>FastAPI</span>
+                        <span>NLP</span><span>BERT</span><span>Transformers</span><span>FastAPI</span>
                     </div>
                 </div>
-
-                <div class="project-card" data-track="project">
+                <div class="project-card">
                     <div class="project-number">04</div>
                     <h3>Sales Forecasting Dashboard</h3>
-                    <p>Designed an interactive dashboard with time series forecasting using LSTM networks. Integrated real-time data pipelines and automated reporting.</p>
+                    <p>Designed an interactive dashboard with time series forecasting using LSTM networks.</p>
                     <div class="project-tags">
-                        <span>Time Series</span>
-                        <span>LSTM</span>
-                        <span>Streamlit</span>
-                        <span>PostgreSQL</span>
+                        <span>Time Series</span><span>LSTM</span><span>Streamlit</span><span>PostgreSQL</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Experience Section -->
         <section class="experience" id="experience">
             <div class="section-header">
                 <div class="section-label">MY JOURNEY</div>
                 <h2>Experience & Education</h2>
             </div>
-
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
@@ -1412,175 +1079,115 @@ section[id] {
                         <span class="timeline-date">2023 - Present</span>
                         <h3>Senior ML Engineer</h3>
                         <h4>Tech Solutions Inc.</h4>
-                        <p>Leading ML initiatives, developing production-ready models, and mentoring junior data scientists. Reduced model inference time by 40% through optimization.</p>
+                        <p>Leading ML initiatives and developing production-ready models.</p>
                     </div>
                 </div>
-
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">2021 - 2023</span>
                         <h3>Data Scientist</h3>
                         <h4>Analytics Corp</h4>
-                        <p>Built predictive models for customer behavior analysis. Collaborated with cross-functional teams to deploy ML solutions that increased revenue by 25%.</p>
+                        <p>Built predictive models for customer behavior analysis.</p>
                     </div>
                 </div>
-
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">2019 - 2021</span>
                         <h3>Junior Data Analyst</h3>
                         <h4>DataTech Solutions</h4>
-                        <p>Performed data analysis and visualization for business intelligence. Created automated ETL pipelines and interactive dashboards.</p>
+                        <p>Performed data analysis and visualization for business intelligence.</p>
                     </div>
                 </div>
-
                 <div class="timeline-item">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content">
                         <span class="timeline-date">2015 - 2019</span>
                         <h3>B.Tech in Computer Science</h3>
                         <h4>University of Technology</h4>
-                        <p>Specialized in Machine Learning and Artificial Intelligence. GPA: 3.8/4.0. Published research on neural network optimization.</p>
+                        <p>Specialized in Machine Learning and Artificial Intelligence.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contact Section -->
         <section class="contact" id="contact">
             <div class="section-header">
                 <div class="section-label">GET IN TOUCH</div>
                 <h2>Let's Work Together</h2>
-                <p class="overview-description">
-                    Have a project in mind or want to discuss data science opportunities? Feel free to reach out!
-                </p>
             </div>
-
             <div class="contact-content">
                 <div class="contact-info">
                     <div class="contact-item">
                         <div class="contact-icon">📧</div>
-                        <div>
-                            <h4>Email</h4>
-                            <p>aryangupta.7263@gmail.com</p>
-                        </div>
+                        <div><h4>Email</h4><p>aryangupta.7263@gmail.com</p></div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">📱</div>
-                        <div>
-                            <h4>Phone</h4>
-                            <p>+91 7534090544</p>
-                        </div>
+                        <div><h4>Phone</h4><p>+91 7534090544</p></div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">📍</div>
-                        <div>
-                            <h4>Location</h4>
-                            <p>New Delhi, India</p>
-                        </div>
+                        <div><h4>Location</h4><p>New Delhi, India</p></div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">💼</div>
-                        <div>
-                            <h4>LinkedIn</h4>
-                            <p>
-                                <a href="https://www.linkedin.com/in/aryangupta7263"
-                                   target="_blank"
-                                   rel="noopener noreferrer">
-                                   linkedin.com/in/aryangupta7263
-                                </a>
-                            </p>
-                        </div>
+                        <div><h4>LinkedIn</h4><p><a href="https://www.linkedin.com/in/aryangupta7263" target="_blank" style="color: #D4AF37;">linkedin.com/in/aryangupta7263</a></p></div>
                     </div>
                 </div>
-
-                
-<form
-  class="contact-form"
-  action="https://formspree.io/f/mjgkaklp"
-  method="POST"
->
-    <input
-      type="text"
-      name="name"
-      placeholder="Your Name"
-      required
-    >
-
-    <input
-      type="email"
-      name="email"
-      placeholder="Your Email"
-      required
-    >
-
-    <textarea
-      name="message"
-      placeholder="Your Message"
-      rows="5"
-      required
-    ></textarea>
-
-    <input type="hidden" name="_subject" value="New Portfolio Contact Message">
-
-    
-<div class="form-action">
-  <button type="submit"><span class="btn-text">Send Message</span><span class="spinner"></span></a>
-  <span id="form-status" class="form-status">
-    <span class="success-icon">✓</span>
-    Message sent successfully. I’ll get back to you soon.
-  </span>
-</div>
-
-</form>
-
-<p id="form-status" style="margin-top:1rem;color:#D4AF37;display:none;">
-  Thank you! Your message has been sent.
-</p>
-
+                <form class="contact-form" action="https://formspree.io/f/mjgkaklp" method="POST">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+                    <input type="hidden" name="_subject" value="New Portfolio Contact Message">
+                    <div class="form-action">
+                        <button type="submit">
+                            <span class="btn-text">Send Message</span>
+                            <span class="spinner"></span>
+                        </button>
+                        <span id="form-status" class="form-status">
+                            <span class="success-icon">✓</span>
+                            Message sent successfully!
+                        </span>
+                    </div>
+                </form>
             </div>
         </section>
 
-        <!-- Footer -->
         <footer>
             <p>&copy; 2024 Aryan. All rights reserved.</p>
         </footer>
     </div>
 
     <script>
-        // Canvas setup for background visualization
+        // Mobile menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('mainNav');
+
+        hamburger.addEventListener('click', function() {
+            nav.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+            });
+        });
+
+        // Canvas animation
         const canvas = document.getElementById('backgroundCanvas');
         const ctx = canvas.getContext('2d');
         
-        // Set canvas to full document height
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = Math.max(document.body.scrollHeight, window.innerHeight);
         }
         
         resizeCanvas();
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            // Redistribute particles on resize
-            particles.length = 0;
-            initParticles();
-        });
-        
-        // Update canvas height on content change
-        window.addEventListener('load', resizeCanvas);
-        
-        // Observe for any dynamic content changes
-        const resizeObserver = new ResizeObserver(() => {
-            const newHeight = Math.max(document.body.scrollHeight, window.innerHeight);
-            if (canvas.height !== newHeight) {
-                resizeCanvas();
-            }
-        });
-        resizeObserver.observe(document.body);
+        window.addEventListener('resize', resizeCanvas);
 
-        // Create particle system
         class Particle {
             constructor(x, y, size, speedX, speedY) {
                 this.x = x;
@@ -1595,8 +1202,6 @@ section[id] {
             update() {
                 this.x += this.speedX;
                 this.y += this.speedY;
-                
-                // Wrap around screen
                 if (this.x < 0) this.x = canvas.width;
                 if (this.x > canvas.width) this.x = 0;
                 if (this.y < 0) this.y = canvas.height;
@@ -1604,12 +1209,10 @@ section[id] {
             }
 
             draw() {
-                // Create golden gradient for particles
                 const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
                 gradient.addColorStop(0, `rgba(212, 175, 55, ${this.opacity})`);
                 gradient.addColorStop(0.5, `rgba(184, 134, 11, ${this.opacity * 0.8})`);
                 gradient.addColorStop(1, `rgba(139, 115, 85, ${this.opacity * 0.5})`);
-                
                 ctx.fillStyle = gradient;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -1617,31 +1220,17 @@ section[id] {
             }
         }
 
-        // Create particles
         const particles = [];
-        
-        function initParticles() {
-            const particleCount = 400; // Increased for desktop
-            
-            for (let i = 0; i < particleCount; i++) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 3 + 0.5;
-                const speedX = (Math.random() - 0.5) * 0.4;
-                const speedY = (Math.random() - 0.5) * 0.4;
-                particles.push(new Particle(x, y, size, speedX, speedY));
-            }
+        for (let i = 0; i < 200; i++) {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const size = Math.random() * 3 + 0.5;
+            const speedX = (Math.random() - 0.5) * 0.4;
+            const speedY = (Math.random() - 0.5) * 0.4;
+            particles.push(new Particle(x, y, size, speedX, speedY));
         }
-        
-        initParticles();
 
-        // Mouse interaction
-        let mouse = {
-            x: null,
-            y: null,
-            radius: 200 // Increased radius for desktop
-        };
-
+        let mouse = { x: null, y: null, radius: 200 };
         window.addEventListener('mousemove', (e) => {
             mouse.x = e.clientX;
             mouse.y = e.clientY + window.scrollY;
@@ -1651,37 +1240,24 @@ section[id] {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Update and draw particles
             particles.forEach(particle => {
                 particle.update();
-                
-                // Mouse interaction with scroll offset
-                if (mouse.x !== null && mouse.y !== null) {
-                    const mouseYOnCanvas = mouse.y;
+                if (mouse.x && mouse.y) {
                     const dx = mouse.x - particle.x;
-                    const dy = mouseYOnCanvas - particle.y;
+                    const dy = mouse.y - particle.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < mouse.radius) {
-                        particle.opacity = particle.baseOpacity + 0.3;
-                    } else {
-                        particle.opacity = particle.baseOpacity;
-                    }
+                    particle.opacity = distance < mouse.radius ? particle.baseOpacity + 0.3 : particle.baseOpacity;
                 }
-                
                 particle.draw();
             });
 
-            // Draw connections between nearby particles
             particles.forEach((p1, i) => {
                 particles.slice(i + 1, i + 5).forEach(p2 => {
                     const dx = p1.x - p2.x;
                     const dy = p1.y - p2.y;
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    
                     if (distance < 150) {
-                        const opacity = 0.25 * (1 - distance / 150);
-                        ctx.strokeStyle = `rgba(180, 134, 67, ${opacity})`;
+                        ctx.strokeStyle = `rgba(180, 134, 67, ${0.25 * (1 - distance / 150)})`;
                         ctx.lineWidth = 1.5;
                         ctx.beginPath();
                         ctx.moveTo(p1.x, p1.y);
@@ -1693,53 +1269,46 @@ section[id] {
 
             requestAnimationFrame(animate);
         }
-
         animate();
 
-        // Smooth scroll
-        document.querySelector('.scroll-indicator').addEventListener('click', () => {
-            const skillsSection = document.querySelector('#skills');
-            const headerHeight = 80;
-            const targetPosition = skillsSection.offsetTop - headerHeight;
+        // Form submission
+        const form = document.querySelector('.contact-form');
+        const status = document.getElementById('form-status');
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const button = form.querySelector('button');
+            button.classList.add('loading');
             
-            window.scrollTo({
-                top: targetPosition,
-                behavior: 'smooth'
+            const response = await fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+                headers: { Accept: 'application/json' }
             });
+            
+            button.classList.remove('loading');
+            
+            if (response.ok) {
+                form.reset();
+                status.style.display = 'flex';
+                setTimeout(() => status.style.display = 'none', 6000);
+            }
         });
 
-        // Smooth scroll for navigation links
-        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                if(e.target.closest(".resume-link")) return;
-                const targetId = this.getAttribute('href');
-                if (targetId !== '#') {
-                    const targetSection = document.querySelector(targetId);
-                    if (targetSection) {
-                        const headerHeight = 80;
-                        const targetPosition = targetSection.offsetTop - headerHeight;
-                        
-                        window.scrollTo({
-                            top: targetPosition,
-                            behavior: 'smooth'
-                        });
-                    }
-                }
-            });
+        // Scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', () => {
+            document.querySelector('#skills').scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Highlight active navigation link on scroll
+        // Active nav link on scroll
         window.addEventListener('scroll', () => {
             const sections = document.querySelectorAll('section[id]');
             const navLinks = document.querySelectorAll('nav a[href^="#"]');
             
             let current = '';
-            const headerHeight = 100;
-            
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (window.scrollY >= sectionTop - headerHeight - 50) {
+                if (window.scrollY >= sectionTop - 150) {
                     current = section.getAttribute('id');
                 }
             });
@@ -1751,87 +1320,6 @@ section[id] {
                 }
             });
         });
-
-        </script>
-
-<script>
-  const form = document.querySelector(".contact-form");
-  const status = document.getElementById("form-status");
-
-  if (form) {
-    form.addEventListener("submit", async function (e) {
-      if(e.target.closest(".resume-link")) return;
-
-      const data = new FormData(form);
-      form.querySelector("button").classList.add("loading");
-
-      const response = await fetch(form.action, {
-        method: form.method,
-        body: data,
-        headers: { Accept: "application/json" }
-      });
-
-      form.querySelector("button").classList.remove("loading");
-
-      if (response.ok) {
-        form.reset();
-        status.style.display = "flex";
-        setTimeout(() => {
-          status.style.display = "none";
-        }, 6000);
-      } else {
-        alert("Something went wrong. Please try again later.");
-      }
-    });
-  }
-</script>
-
-<script>
-/* GA Event Tracking */
-document.addEventListener("DOMContentLoaded", function () {
-
-  // Resume click tracking
-  const resumeLink = document.querySelector(".resume-link");
-  if (resumeLink) {
-    resumeLink.addEventListener("click", () => {
-      gtag('event', 'resume_click', {
-        event_category: 'engagement',
-        event_label: 'Resume'
-      });
-    });
-  }
-
-  // Project card click tracking
-  document.querySelectorAll("[data-track='project']").forEach(card => {
-    card.addEventListener("click", () => {
-      const title = card.querySelector("h3")?.innerText || "Project";
-      gtag('event', 'project_click', {
-        event_category: 'engagement',
-        event_label: title
-      });
-    });
-  });
-
-});
-</script>
-
-<script>
-  const mobileMenu = document.querySelector(".mobile-menu");
-  const nav = document.querySelector("nav");
-
-  if (mobileMenu && nav) {
-    mobileMenu.addEventListener("click", () => {
-      nav.classList.toggle("active");
-    });
-
-    nav.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("active");
-      });
-    });
-  }
-</script>
-
+    </script>
 </body>
 </html>
-
