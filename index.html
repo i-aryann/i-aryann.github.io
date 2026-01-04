@@ -1,39 +1,4 @@
-<header>
-        <div class="logo">
-            Aryan <span>| Data Scientist</span>
-        </div>
-
-        <div class="nav-actions">
-            
-            <div class="mobile-menu" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-
-        <nav>
-            <a href="#hero">Home</a>
-            <a href="#skills">Skills</a>
-            <a href="#projects">Projects</a>
-            <a href="#experience">Experience</a>
-            <a href="#contact">Contact</a>
-            
-        
-<a href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf"
-   class="resume-link"
-   target="_blank"
-   rel="noopener noreferrer">
-  View Resume
-</a>
-
-</nav>
-        <div class="mobile-menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-    </header><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1052,182 +1017,10 @@ button.loading .btn-text {
   }
 }
 
-
-/* Mobile resume button + nav actions */
-.nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.mobile-resume {
-    display: none;
-    padding: 0.4rem 1rem;
-    border: 1px solid #D4AF37;
-    border-radius: 20px;
-    color: #D4AF37;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
-@media (max-width: 768px) {
-    .mobile-resume {
-        display: inline-block;
-    }
-
-    nav {
-        position: absolute;
-        top: 80px;
-        right: 6%;
-        background: #000;
-        flex-direction: column;
-        gap: 1.5rem;
-        padding: 1.5rem;
-        border-radius: 12px;
-        border: 1px solid rgba(212,175,55,0.3);
-    }
-
-    nav.active {
-        display: flex;
-    }
-}
-
-
-/* Fix anchor navigation vertical centering */
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  align-items: flex-start !important;
-}
-
-section {
-  scroll-margin-top: 90px; /* offset for fixed header */
-}
-
-
-/* Precise anchor alignment fix for fixed header */
-:root {
-  --nav-height: 110px;
-}
-
-section[id] {
-  scroll-margin-top: var(--nav-height);
-}
-
-
-/* ===== HARD FIX: Allow clicks to pass to Resume ===== */
-.resume-link { position: relative; z-index: 100000; pointer-events: auto; }
-*::before, *::after { pointer-events: none; }
-
-
-/* ===== Resume button visibility & styling fix ===== */
-
-/* Base resume button styling */
-.resume-link {
-  padding: 0.5rem 1.2rem;
-  border: 1px solid #D4AF37;
-  border-radius: 20px;
-  color: #D4AF37;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-/* Hide mobile resume by default */
-.mobile-resume {
-  display: none !important;
-}
-
-/* Desktop-only resume */
-.desktop-resume {
-  display: inline-block;
-}
-
-/* Mobile behavior */
-@media (max-width: 768px) {
-  .desktop-resume {
-    display: none !important;
-  }
-  .mobile-resume {
-    display: inline-block !important;
-  }
-}
-
-/* Prevent default link blue/purple */
-.resume-link:visited,
-.resume-link:active {
-  color: #D4AF37;
-}
-
-
-/* ===== HEADER REFINEMENT: HEIGHT & VERTICAL ALIGNMENT ===== */
-.site-header {
-  height: 64px;              /* reduced overall height */
-}
-
-.header-inner {
-  padding: 0 2rem;           /* reduce vertical padding */
-  height: 100%;
-  align-items: center;       /* ensure perfect vertical centering */
-}
-
-.nav a,
-.resume-link {
-  line-height: 1;            /* remove extra vertical text space */
-  display: flex;
-  align-items: center;
-}
-
-
-/* ===== MOBILE: SINGLE HAMBURGER, RIGHT ALIGNED ===== */
-@media (max-width: 768px) {
-  .header-inner {
-    display: flex;
-    align-items: center;
-  }
-
-  .hamburger {
-    margin-left: auto;
-  }
-}
-
-
-/* ===== FINAL MOBILE HAMBURGER GUARANTEE ===== */
-@media (max-width: 768px) {
-  /* Hide ALL hamburger buttons by default */
-  .hamburger {
-    display: none !important;
-  }
-
-  /* Show ONLY the hamburger inside the main header */
-  .site-header .hamburger {
-    display: block !important;
-    margin-left: auto;
-  }
-}
-
-
-/* ===== ABSOLUTE FINAL FIX: ALLOW ONLY ONE HAMBURGER ===== */
-@media (max-width: 768px) {
-  /* Hide ALL buttons that look like hamburger */
-  button {
-    display: none !important;
-  }
-
-  /* Re-enable ONLY the hamburger inside the main header */
-  .site-header button.hamburger {
-    display: block !important;
-    margin-left: auto;
-  }
-}
-
 </style>
 
 <!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1ZBM2E5QR"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -1252,7 +1045,20 @@ section[id] {
     <canvas id="backgroundCanvas" class="background-canvas"></canvas>
 
     <!-- Header -->
-    
+    <header>
+        <div class="logo">
+            Aryan <span>| Data Scientist</span>
+        </div>
+        <nav>
+            <a href="#hero">Home</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#experience">Experience</a>
+            <a href="#contact">Contact</a>
+            <a href="#" class="resume-link" data-track="resume">View Resume</a>
+        </nav>
+        
+    </header>
 
     <div class="content-wrapper">
         <!-- Hero Section -->
@@ -1494,34 +1300,28 @@ section[id] {
                         <div class="contact-icon">📧</div>
                         <div>
                             <h4>Email</h4>
-                            <p>aryangupta.7263@gmail.com</p>
+                            <p>aryan@datascience.com</p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">📱</div>
                         <div>
                             <h4>Phone</h4>
-                            <p>+91 7534090544</p>
+                            <p>+1 (555) 123-4567</p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">📍</div>
                         <div>
                             <h4>Location</h4>
-                            <p>New Delhi, India</p>
+                            <p>San Francisco, CA</p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">💼</div>
                         <div>
                             <h4>LinkedIn</h4>
-                            <p>
-                                <a href="https://www.linkedin.com/in/aryangupta7263"
-                                   target="_blank"
-                                   rel="noopener noreferrer">
-                                   linkedin.com/in/aryangupta7263
-                                </a>
-                            </p>
+                            <p>linkedin.com/in/aryan</p>
                         </div>
                     </div>
                 </div>
@@ -1557,7 +1357,7 @@ section[id] {
 
     
 <div class="form-action">
-  <button type="submit"><span class="btn-text">Send Message</span><span class="spinner"></span></a>
+  <button type="submit"><span class="btn-text">Send Message</span><span class="spinner"></span></button>
   <span id="form-status" class="form-status">
     <span class="success-icon">✓</span>
     Message sent successfully. I’ll get back to you soon.
@@ -1741,7 +1541,7 @@ section[id] {
         // Smooth scroll for navigation links
         document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
-                if(e.target.closest(".resume-link")) return;
+                e.preventDefault();
                 const targetId = this.getAttribute('href');
                 if (targetId !== '#') {
                     const targetSection = document.querySelector(targetId);
@@ -1782,7 +1582,19 @@ section[id] {
             });
         });
 
-        </script>
+        // Resume link - Replace with your actual resume URL
+        document.querySelector('.resume-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            // Option 1: Download resume
+            // window.location.href = '/path/to/your/resume.pdf';
+            
+            // Option 2: Open in new tab
+            // window.open('/path/to/your/resume.pdf', '_blank');
+            
+            // Placeholder alert
+            alert('Please add your resume PDF link here!');
+        });
+    </script>
 
 <script>
   const form = document.querySelector(".contact-form");
@@ -1790,7 +1602,7 @@ section[id] {
 
   if (form) {
     form.addEventListener("submit", async function (e) {
-      if(e.target.closest(".resume-link")) return;
+      e.preventDefault();
 
       const data = new FormData(form);
       form.querySelector("button").classList.add("loading");
@@ -1844,24 +1656,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
-
-<script>
-  const mobileMenu = document.querySelector(".mobile-menu");
-  const nav = document.querySelector("nav");
-
-  if (mobileMenu && nav) {
-    mobileMenu.addEventListener("click", () => {
-      nav.classList.toggle("active");
-    });
-
-    nav.querySelectorAll("a").forEach(link => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("active");
-      });
-    });
-  }
-</script>
-
 </body>
 </html>
 
