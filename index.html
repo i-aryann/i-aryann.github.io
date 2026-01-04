@@ -1082,6 +1082,11 @@ section[id] {
   scroll-margin-top: var(--nav-height);
 }
 
+
+/* ===== HARD FIX: Allow clicks to pass to Resume ===== */
+.resume-link { position: relative; z-index: 100000; pointer-events: auto; }
+*::before, *::after { pointer-events: none; }
+
 </style>
 
 <!-- Google Analytics 4 -->
@@ -1116,7 +1121,7 @@ section[id] {
         </div>
 
         <div class="nav-actions">
-            <a href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link mobile-resume" data-track="resume" target="_blank" href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer" href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer">View Resume</a>
+            <a href="Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link mobile-resume" data-track="resume" target="_blank" href="Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer" href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer">View Resume</a>
             <div class="mobile-menu" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
@@ -1130,7 +1135,7 @@ section[id] {
             <a href="#projects">Projects</a>
             <a href="#experience">Experience</a>
             <a href="#contact">Contact</a>
-            <a href="#" class="resume-link" data-track="resume" href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer" href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer">View Resume</a>
+            <a href="#" class="resume-link" data-track="resume" href="Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer" href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" target="_blank" rel="noopener noreferrer">View Resume</a>
         </nav>
         <div class="mobile-menu">
             <span></span>
