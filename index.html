@@ -1017,6 +1017,24 @@ button.loading .btn-text {
   }
 }
 
+
+/* ===== SINGLE WORKING HAMBURGER (MOBILE ONLY) ===== */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #D4AF37;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+    margin-left: auto;
+  }
+}
+
 </style>
 
 <!-- Google Analytics 4 -->
@@ -1656,6 +1674,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.querySelector(".hamburger");
+  const nav = document.querySelector("nav");
+  if (btn && nav) {
+    btn.addEventListener("click", () => {
+      nav.classList.toggle("open");
+    });
+  }
+});
+</script>
+
 </body>
 </html>
 
