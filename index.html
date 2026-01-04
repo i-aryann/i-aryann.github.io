@@ -1087,6 +1087,46 @@ section[id] {
 .resume-link { position: relative; z-index: 100000; pointer-events: auto; }
 *::before, *::after { pointer-events: none; }
 
+
+/* ===== Resume button visibility & styling fix ===== */
+
+/* Base resume button styling */
+.resume-link {
+  padding: 0.5rem 1.2rem;
+  border: 1px solid #D4AF37;
+  border-radius: 20px;
+  color: #D4AF37;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Hide mobile resume by default */
+.mobile-resume {
+  display: none !important;
+}
+
+/* Desktop-only resume */
+.desktop-resume {
+  display: inline-block;
+}
+
+/* Mobile behavior */
+@media (max-width: 768px) {
+  .desktop-resume {
+    display: none !important;
+  }
+  .mobile-resume {
+    display: inline-block !important;
+  }
+}
+
+/* Prevent default link blue/purple */
+.resume-link:visited,
+.resume-link:active {
+  color: #D4AF37;
+}
+
 </style>
 
 <!-- Google Analytics 4 -->
@@ -1121,7 +1161,7 @@ section[id] {
         </div>
 
         <div class="nav-actions">
-            <a href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link" target="_blank" rel="noopener noreferrer">View Resume</a>
+            <a href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link desktop-resume" target="_blank" rel="noopener noreferrer">View Resume</a>
             <div class="mobile-menu" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
@@ -1135,7 +1175,7 @@ section[id] {
             <a href="#projects">Projects</a>
             <a href="#experience">Experience</a>
             <a href="#contact">Contact</a>
-            <a href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link" target="_blank" rel="noopener noreferrer">View Resume</a>
+            <a href="https://i-aryann.github.io/Aryan_Gupta_Data_Scientist_Resume.pdf" class="resume-link desktop-resume" target="_blank" rel="noopener noreferrer">View Resume</a>
         </nav>
         <div class="mobile-menu">
             <span></span>
