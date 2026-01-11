@@ -130,6 +130,26 @@
             width: 100%;
         }
 
+        /* Highlight Resume Button */
+        nav a.resume-link {
+            border: 1px solid var(--gold-primary);
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            margin-left: 0.5rem;
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        nav a.resume-link:hover {
+            background: var(--gold-primary);
+            color: #000;
+            box-shadow: 0 0 15px var(--gold-glow);
+            text-shadow: none;
+        }
+
+        nav a.resume-link::after {
+            display: none !important;
+        }
+
         .mobile-menu {
             display: none;
             flex-direction: column;
@@ -224,6 +244,51 @@
             font-weight: 300;
             max-width: 700px;
             margin: 0 auto;
+        }
+
+        /* Scroll Indicator - Mouse Style */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            z-index: 10;
+            width: 30px;
+            height: 50px;
+            border: 2px solid var(--gold-primary);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .scroll-indicator:hover {
+            opacity: 1;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .mouse-wheel {
+            width: 4px;
+            height: 8px;
+            background: var(--gold-primary);
+            border-radius: 2px;
+            margin-top: 5px;
+            animation: scroll-animate 2s infinite;
+        }
+
+        @keyframes scroll-animate {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
         }
 
         /* Section Commons */
@@ -669,9 +734,14 @@
             }
 
             /* Hide fancy decorations on mobile if they cause overflow */
-            .hero-decoration,
-            .scroll-indicator {
+            .hero-decoration {
                 display: none;
+            }
+
+            /* Ensure scroll indicator is visible on mobile */
+            .scroll-indicator {
+                bottom: 6rem;
+                /* Adjust for mobile spacing */
             }
         }
 
@@ -801,6 +871,22 @@
                 transform: scale(0.95);
             }
         }
+
+        /* Entrance Animations */
+        .hidden-el {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(5px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+
+        .show-el {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        /* Stagger delays handled in JS or via nth-child if simple */
     </style>
 
     <title>Aryan Gupta | Data Scientist Portfolio</title>
@@ -872,7 +958,9 @@
                 <div class="deco-circle"></div>
                 <div class="deco-circle"></div>
             </div>
-            <div class="scroll-indicator"></div>
+            <div class="scroll-indicator">
+                <div class="mouse-wheel"></div>
+            </div>
         </section>
 
         <section class="overview" id="skills">
@@ -1147,7 +1235,8 @@
         }
 
         resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        // Removed direct listener, moved to debounce below
+        // window.addEventListener('resize', resizeCanvas);
 
         class Particle {
             constructor() {
@@ -1323,6 +1412,37 @@
 
         setupScrollControls('skills', '.skills-grid');
         setupScrollControls('projects', '.projects-grid');
+
+        // Intersection Observer for Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px' // Trigger slightly before element is fully in view
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show-el');
+                    observer.unobserve(entry.target); // Only animate once
+                }
+            });
+        }, observerOptions);
+
+        // Elements to animate
+        const animatedElements = document.querySelectorAll('.skill-category, .project-card, .timeline-item, .contact-item, .section-header');
+        animatedElements.forEach((el, index) => {
+            el.classList.add('hidden-el');
+            // Optional: add slight delay based on index for stagger effect within same container? 
+            // Simplified: just observing triggers naturally as you scroll
+            observer.observe(el);
+        });
+
+        // Optimized Resize (Debounce)
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(resizeCanvas, 100);
+        });
     </script>
 </body>
 
