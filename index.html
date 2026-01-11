@@ -234,7 +234,7 @@
 
         .overview {
             padding: clamp(4rem, 8vw, 6rem) 5%;
-            background: linear-gradient(to bottom, #000000, #0a0a0a);
+            /* background: linear-gradient(to bottom, #000000, #0a0a0a); */
             position: relative;
             z-index: 2;
             text-align: center;
@@ -435,6 +435,11 @@
             border-radius: 20px;
             font-size: 0.85rem;
             color: var(--gold-primary);
+        }
+
+        /* Mobile Scroll Controls Default */
+        .scroll-controls {
+            display: none;
         }
 
         /* Timeline & Contact (Simplified) */
@@ -699,7 +704,101 @@
 
             .logo {
                 font-size: 1.4rem;
-                /* Reduce font size on mobile */
+            }
+
+            section {
+                padding: clamp(3rem, 6vh, 4rem) 5%;
+                /* Reduced global padding */
+            }
+
+            .section-header {
+                margin-bottom: 2rem;
+            }
+
+            /* Horizontal Scrolling for Skills & Projects */
+            .skills-grid,
+            .projects-grid {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 1.5rem;
+                /* Space for interaction */
+                scroll-snap-type: x mandatory;
+                gap: 1rem;
+                margin-top: 2rem;
+                margin-left: -5%;
+                /* Negative margin to span full width */
+                margin-right: -5%;
+                padding-left: 5%;
+                /* Restore padding for first item */
+                padding-right: 5%;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Hide scrollbar for cleaner look */
+            .skills-grid::-webkit-scrollbar,
+            .projects-grid::-webkit-scrollbar {
+                display: none;
+            }
+
+            .skill-category,
+            .project-card {
+                flex: 0 0 85%;
+                /* Shows part of next card to hint scroll */
+                min-width: 260px;
+                max-width: 320px;
+                scroll-snap-align: center;
+                margin-bottom: 0;
+            }
+
+            /* Experience Compact */
+            .timeline {
+                padding-left: 10px;
+            }
+
+            .timeline-item {
+                padding-bottom: 2rem;
+                padding-left: 2rem;
+            }
+
+            /* Contact Compact */
+            .contact-content {
+                gap: 2rem;
+            }
+
+            .contact-form {
+                padding: 1.5rem;
+            }
+
+            /* Scroll Controls */
+            .scroll-controls {
+                display: flex;
+                justify-content: center;
+                gap: 1rem;
+                margin-top: 1rem;
+                padding-right: 0;
+            }
+
+            .scroll-btn {
+                background: rgba(212, 175, 55, 0.1);
+                border: 1px solid var(--gold-primary);
+                color: var(--gold-primary);
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(5px);
+            }
+
+            .scroll-btn:active {
+                background: var(--gold-primary);
+                color: #000;
+                transform: scale(0.95);
             }
         }
     </style>
@@ -853,6 +952,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="scroll-controls mobile-only">
+                <button class="scroll-btn scroll-left" aria-label="Scroll Left"><i
+                        class="fas fa-chevron-left"></i></button>
+                <button class="scroll-btn scroll-right" aria-label="Scroll Right"><i
+                        class="fas fa-chevron-right"></i></button>
+            </div>
         </section>
 
         <section class="projects" id="projects">
@@ -860,6 +966,7 @@
                 <div class="section-label">MY WORK</div>
                 <h2>Featured Projects</h2>
             </div>
+
             <div class="projects-grid">
                 <div class="project-card">
                     <div class="project-number">01</div>
@@ -894,6 +1001,13 @@
                         <span>Time Series</span><span>LSTM</span><span>Streamlit</span><span>PostgreSQL</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="scroll-controls mobile-only">
+                <button class="scroll-btn scroll-left" aria-label="Scroll Left"><i
+                        class="fas fa-chevron-left"></i></button>
+                <button class="scroll-btn scroll-right" aria-label="Scroll Right"><i
+                        class="fas fa-chevron-right"></i></button>
             </div>
         </section>
 
@@ -1186,6 +1300,29 @@
                 }
             });
         });
+
+        // Mobile Scroll Controls
+        function setupScrollControls(sectionId, gridClass) {
+            const section = document.getElementById(sectionId);
+            if (!section) return;
+
+            const grid = section.querySelector(gridClass);
+            const leftBtn = section.querySelector('.scroll-left');
+            const rightBtn = section.querySelector('.scroll-right');
+
+            if (grid && leftBtn && rightBtn) {
+                leftBtn.addEventListener('click', () => {
+                    grid.scrollBy({ left: -window.innerWidth * 0.7, behavior: 'smooth' });
+                });
+
+                rightBtn.addEventListener('click', () => {
+                    grid.scrollBy({ left: window.innerWidth * 0.7, behavior: 'smooth' });
+                });
+            }
+        }
+
+        setupScrollControls('skills', '.skills-grid');
+        setupScrollControls('projects', '.projects-grid');
     </script>
 </body>
 
