@@ -432,6 +432,18 @@
             margin: 0 auto;
         }
 
+        .project-link {
+            text-decoration: none;
+            color: inherit;
+            display: contents;
+            /* Allows the card to behave as the flex item directly if possible, or we wrap flex behaviour */
+        }
+
+        /* Modifying project-card to work inside link or as link */
+        a.project-link {
+            display: contents;
+        }
+
         .project-card {
             flex: 1 1 350px;
             /* Allow growing/shrinking, base 350px */
@@ -500,6 +512,31 @@
             border-radius: 20px;
             font-size: 0.85rem;
             color: var(--gold-primary);
+        }
+
+        a.view-project-btn {
+            display: inline-block;
+            /* Ensure it behaves like a button */
+            text-decoration: none;
+            /* Remove default link underline */
+            margin-top: 1.5rem;
+            padding: 0.6rem 1.2rem;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .project-card:hover a.view-project-btn {
+            background: var(--gold-primary);
+            color: #000;
+            box-shadow: 0 0 15px var(--gold-glow);
         }
 
         /* Mobile Scroll Controls Default */
@@ -1064,7 +1101,9 @@
                     <div class="project-tags">
                         <span>Python</span><span>XGBoost</span><span>Flask</span><span>AWS</span>
                     </div>
+                    <a href="project-detail.html?id=churn" class="view-project-btn">View Project</a>
                 </div>
+
                 <div class="project-card">
                     <div class="project-number">02</div>
                     <h3>Image Classification System</h3>
@@ -1072,7 +1111,9 @@
                     <div class="project-tags">
                         <span>PyTorch</span><span>CNN</span><span>Computer Vision</span><span>Docker</span>
                     </div>
+                    <a href="project-detail.html?id=vision" class="view-project-btn">View Project</a>
                 </div>
+
                 <div class="project-card">
                     <div class="project-number">03</div>
                     <h3>NLP Sentiment Analyzer</h3>
@@ -1080,7 +1121,9 @@
                     <div class="project-tags">
                         <span>NLP</span><span>BERT</span><span>Transformers</span><span>FastAPI</span>
                     </div>
+                    <a href="project-detail.html?id=nlp" class="view-project-btn">View Project</a>
                 </div>
+
                 <div class="project-card">
                     <div class="project-number">04</div>
                     <h3>Sales Forecasting Dashboard</h3>
@@ -1088,6 +1131,7 @@
                     <div class="project-tags">
                         <span>Time Series</span><span>LSTM</span><span>Streamlit</span><span>PostgreSQL</span>
                     </div>
+                    <a href="project-detail.html?id=sales" class="view-project-btn">View Project</a>
                 </div>
             </div>
 
