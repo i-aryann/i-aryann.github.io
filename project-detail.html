@@ -7,412 +7,26 @@
     <title>Project Details | Aryan Gupta</title>
 
     <!-- Reuse existing styles -->
-    <style>
-        :root {
-            --bg-dark: #050505;
-            --bg-card: rgba(20, 20, 25, 0.6);
-            --gold-primary: #D4AF37;
-            --gold-secondary: #C5A028;
-            --gold-glow: rgba(212, 175, 55, 0.3);
-            --text-main: #ffffff;
-            --text-muted: #cccccccc;
-            --font-main: 'Segoe UI', system-ui, sans-serif;
-            --nav-height: 80px;
-        }
+    <link rel="stylesheet" href="css/styles.css">
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Detailed overview of my data science and machine learning projects.">
+    <meta name="keywords" content="Data Science, Machine Learning, Python, AI Projects, Aryan Gupta">
+    <meta name="author" content="Aryan Gupta">
 
-        body {
-            font-family: var(--font-main);
-            background: var(--bg-dark);
-            color: var(--text-main);
-            overflow-x: hidden;
-            min-height: 100vh;
-            line-height: 1.6;
-        }
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Project Details | Aryan Gupta">
+    <meta property="og:description" content="Explore the technical details of my data science projects.">
 
-        /* Glassmorphism */
-        .glass-panel {
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-        }
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--nav-height);
-            background: rgba(5, 5, 5, 0.85);
-            backdrop-filter: blur(15px);
-            padding: 0 clamp(2rem, 8vw, 10%);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-main);
-            letter-spacing: -1px;
-            text-transform: uppercase;
-            text-decoration: none;
-        }
-
-        .logo span {
-            color: var(--gold-primary);
-            font-weight: 300;
-        }
-
-        .back-link {
-            color: var(--gold-primary);
-            text-decoration: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .back-link:hover {
-            transform: translateX(-5px);
-            text-shadow: 0 0 10px var(--gold-glow);
-        }
-
-        /* Project Content */
-        .project-hero {
-            padding: calc(var(--nav-height) + 4rem) clamp(2rem, 5vw, 10%) 4rem;
-            text-align: center;
-            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.1) 0%, transparent 60%);
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .project-title {
-            font-size: clamp(2.5rem, 5vw, 4.5rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-            background: linear-gradient(135deg, #FFD700, #D4AF37, #B8860B);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.2));
-            padding: 0 1rem;
-        }
-
-        .project-tagline {
-            font-size: clamp(1.1rem, 2vw, 1.5rem);
-            color: var(--text-muted);
-            max-width: 800px;
-            margin: 0 auto 2rem;
-            font-weight: 300;
-            padding: 0 1rem;
-        }
-
-        .project-meta {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .meta-item i {
-            color: var(--gold-primary);
-        }
-
-        /* Hero Actions */
-        .hero-actions {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 1rem;
-        }
-
-        .content-container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 clamp(1.5rem, 5vw, 5%);
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.8s ease forwards;
-            animation-delay: 0.2s;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .detail-section {
-            margin-bottom: 4rem;
-        }
-
-        .detail-section h2 {
-            font-size: 2rem;
-            color: var(--text-main);
-            margin-bottom: 1.5rem;
-            border-left: 3px solid var(--gold-primary);
-            padding-left: 1rem;
-        }
-
-        .detail-section p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 1.5rem;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            border-color: var(--gold-primary);
-            background: rgba(255, 255, 255, 0.05);
-            transform: translateY(-5px);
-        }
-
-        .feature-card h3 {
-            color: var(--gold-secondary);
-            font-size: 1.2rem;
-            margin-bottom: 0.8rem;
-        }
-
-        .feature-card p {
-            font-size: 1rem;
-            margin-bottom: 0;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
-
-        .tech-tag {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.95rem;
-            color: var(--gold-primary);
-            transition: all 0.3s;
-        }
-
-        .tech-tag:hover {
-            background: var(--gold-primary);
-            color: #000;
-            box-shadow: 0 0 10px var(--gold-glow);
-        }
-
-        .links-section {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 3rem;
-            margin-bottom: 5rem;
-            justify-content: center;
-        }
-
-        .action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #D4AF37, #C5A028);
-            color: #000;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.4);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--gold-primary);
-            border: 1px solid var(--gold-primary);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(212, 175, 55, 0.1);
-            transform: translateY(-3px);
-        }
-
-        footer {
-            padding: 3rem 5%;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            background: #000;
-        }
-
-        /* Loading State */
-        #loading-state {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid rgba(212, 175, 55, 0.3);
-            border-bottom-color: var(--gold-primary);
-            border-radius: 50%;
-            animation: rotation 1s linear infinite;
-        }
-
-        @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            header {
-                padding: 0 1rem;
-                height: 60px;
-                /* Reduced height for mobile */
-            }
-
-            .logo {
-                font-size: 1.2rem;
-            }
-
-            .logo span {
-                font-size: 0.9rem;
-                display: none;
-                /* Hide subtitle on very small screens to ensure single line */
-            }
-
-            @media (min-width: 380px) {
-                .logo span {
-                    display: inline;
-                    font-size: 0.8rem;
-                }
-            }
-
-            .back-link {
-                font-size: 0.9rem;
-            }
-
-            .project-hero {
-                min-height: auto;
-                padding: calc(60px + 2rem) 1.5rem 3rem;
-                /* match new header height */
-            }
-
-            .project-title {
-                font-size: 2.5rem;
-                /* Fallback */
-                font-size: clamp(2rem, 10vw, 3rem);
-                margin-bottom: 0.5rem;
-            }
-
-            .project-meta {
-                flex-direction: column;
-                gap: 0.5rem;
-                margin-bottom: 2rem;
-            }
-
-            .hero-actions {
-                flex-direction: row;
-                width: 100%;
-                gap: 0.8rem;
-                justify-content: center;
-            }
-
-            .hero-actions .action-btn {
-                width: auto;
-                padding: 0.7rem 1.2rem;
-                font-size: 0.9rem;
-                flex: 0 1 auto;
-            }
-
-            .content-container {
-                padding: 0 1.5rem;
-            }
-
-            .feature-list {
-                grid-template-columns: 1fr;
-                /* Stack vertically */
-            }
-
-            .feature-card {
-                padding: 1.25rem;
-            }
-
-            .links-section {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 1rem;
-                margin-bottom: 3rem;
-            }
-
-            .action-btn {
-                justify-content: center;
-                width: 100%;
-                padding: 1rem;
-            }
-        }
-    </style>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1ZBM2E5QR"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-Q1ZBM2E5QR');
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -471,13 +85,16 @@
                 </div>
             </section>
 
-            <section class="links-section">
-                <a href="#" class="action-btn btn-primary" id="btn-github">
-                    <i class="fab fa-github"></i> View Source Code
-                </a>
-                <a href="#" class="action-btn btn-secondary" id="btn-demo">
-                    <i class="fas fa-external-link-alt"></i> Live Demo
-                </a>
+            <section class="detail-section">
+                <h2>Project Links</h2>
+                <div class="links-section" style="justify-content: flex-start; margin-top: 0;">
+                    <a href="#" class="action-btn btn-primary" id="btn-github">
+                        <i class="fab fa-github"></i> View Source Code
+                    </a>
+                    <a href="#" class="action-btn btn-secondary" id="btn-demo">
+                        <i class="fas fa-external-link-alt"></i> Live Demo
+                    </a>
+                </div>
             </section>
         </div>
     </div>
@@ -496,8 +113,6 @@
             // Find project data
             const project = projectsData[projectId];
 
-            // Simulation of loading delay for effect
-            // setTimeout(() => {
             const loader = document.getElementById('loading-state');
             const content = document.getElementById('project-content');
 
@@ -509,6 +124,19 @@
                 document.getElementById('p-year').innerText = project.year;
                 document.getElementById('p-category').innerText = project.category;
                 document.getElementById('p-tech').innerText = project.tech;
+
+                // Dynamic SEO: Update Meta Tags
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) metaDesc.setAttribute('content', `${project.title} - ${project.tagline}. A ${project.category} project.`);
+
+                const metaKeywords = document.querySelector('meta[name="keywords"]');
+                if (metaKeywords) metaKeywords.setAttribute('content', `${project.tech}, ${project.category}, ${project.title}, Aryan Gupta Portfolio`);
+
+                const ogTitle = document.querySelector('meta[property="og:title"]');
+                if (ogTitle) ogTitle.setAttribute('content', `${project.title} | Aryan Gupta`);
+
+                const ogDesc = document.querySelector('meta[property="og:description"]');
+                if (ogDesc) ogDesc.setAttribute('content', project.tagline);
 
                 // Update Description
                 document.getElementById('p-description').innerHTML = project.description;
@@ -563,15 +191,7 @@
             // }, 500);
         });
     </script>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1ZBM2E5QR"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
 
-        gtag('config', 'G-Q1ZBM2E5QR');
-    </script>
 </body>
 
 </html>
