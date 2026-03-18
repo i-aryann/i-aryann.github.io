@@ -1,5 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import '@/App.css';
+import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -20,19 +21,109 @@ import {
   FileText,
   Award,
   Briefcase,
-  GraduationCap
+  GraduationCap,
+  ArrowLeft
 } from 'lucide-react';
 
-function App() {
+// Project Data with full details
+const projectsData = {
+  'credit-default': {
+    id: 1,
+    slug: 'credit-default',
+    title: 'Credit Default Risk Analyzer',
+    tagline: 'Predicting customer credit repayment default using machine learning',
+    year: '2024',
+    category: 'Machine Learning',
+    description: `Credit default risk modeling is a critical task for financial institutions. This project aims to predict the likelihood of a customer defaulting on their credit card payment in the next month based on their demographic data and 6-month transaction history.\n\nObjective: Maximize the identification of high-risk customers (Recall) while maintaining a reasonable precision to avoid unnecessary declines.`,
+    tech: ['Python', 'XGBoost', 'Scikit-learn', 'Streamlit', 'AWS SageMaker', 'Docker', 'Pandas', 'Flask API'],
+    github: 'https://github.com/i-aryann/Credit-Default-Prediction',
+    demo: 'https://credit-default-prediction-aryan.streamlit.app/',
+    highlights: ['92% ROC-AUC Score', 'SHAP Integration', 'Automated CI/CD Pipeline'],
+    features: [
+      {
+        title: 'High Accuracy Ensemble',
+        desc: 'Utilized an ensemble of XGBoost and Random Forest models to achieve a 92% ROC-AUC score, significantly outperforming baseline logistic regression.'
+      },
+      {
+        title: 'Explainable AI',
+        desc: 'Integrated SHAP (SHapley Additive exPlanations) values to provide transparency, showing exactly why a specific customer was flagged as high-risk.'
+      },
+      {
+        title: 'Business Metrics',
+        desc: 'Engineered real world business metrics to enhance performance and business impact, including Utilization Ratio, Delinquency Trend, Payment-to-Balance Ratio and Spending Volatility.'
+      },
+      {
+        title: 'Automated Pipeline',
+        desc: 'Implemented a fully automated CI/CD pipeline for model retraining and deployment using AWS SageMaker and GitHub Actions.'
+      }
+    ]
+  },
+  'nlp-sentiment': {
+    id: 2,
+    slug: 'nlp-sentiment',
+    title: 'NLP Sentiment Analyzer',
+    tagline: 'Understanding Social Media Sentiment with Transformers',
+    year: '2023',
+    category: 'NLP',
+    description: `In the age of social media, understanding public opinion is vital for brand management. This tool analyzes social media feeds to determine the sentiment (positive, negative, neutral) regarding specific topics or brand mentions in real-time.\n\nBuilt upon the BERT architecture, the model understands context and nuance better than traditional bag-of-words approaches. It processes thousands of tweets per minute and visualizes the aggregate sentiment trends over time.`,
+    tech: ['NLP', 'BERT', 'Transformers', 'FastAPI', 'Kafka', 'React', 'Hugging Face', 'Python'],
+    github: '#',
+    demo: '#',
+    highlights: ['BERT Architecture', 'Real-time Processing', 'Interactive Dashboard'],
+    features: [
+      {
+        title: 'Transformer Architecture',
+        desc: 'Uses a fine-tuned BERT model for state-of-the-art accuracy in understanding context and sarcasm.'
+      },
+      {
+        title: 'Real-time Processing',
+        desc: 'Ingests and processes live Twitter/X data streams using Apache Kafka and Spark Streaming.'
+      },
+      {
+        title: 'Interactive Visualization',
+        desc: 'Frontend dashboard built with React and D3.js to visualize sentiment shifts and trending keywords.'
+      }
+    ]
+  },
+  'sales-forecasting': {
+    id: 3,
+    slug: 'sales-forecasting',
+    title: 'Sales Forecasting Dashboard',
+    tagline: 'Predicting Future Revenue with Time Series Analysis',
+    year: '2023',
+    category: 'Data Analytics',
+    description: `Accurate sales forecasting is key to inventory management and resource planning. This project provides a comprehensive dashboard that predicts future sales based on historical data, seasonality, and market trends.\n\nUsing Long Short-Term Memory (LSTM) recurrent neural networks, the model captures complex temporal dependencies. The results are presented in an intuitive dashboard that allows business managers to run 'what-if' scenarios.`,
+    tech: ['Time Series', 'LSTM', 'TensorFlow', 'Streamlit', 'PostgreSQL', 'Plotly', 'Keras', 'Pandas'],
+    github: '#',
+    demo: '#',
+    highlights: ['LSTM Networks', 'What-if Scenarios', 'Automated Reporting'],
+    features: [
+      {
+        title: 'LSTM Networks',
+        desc: 'Implemented Recurrent Neural Networks (RNN) specifically designed to learn long-term dependencies in time-series data.'
+      },
+      {
+        title: 'Interactive Scenarios',
+        desc: 'Users can adjust parameters (e.g., marketing spend, pricing) to see potential impacts on future sales.'
+      },
+      {
+        title: 'Automated Reporting',
+        desc: 'Generates weekly PDF reports summarizing forecast accuracy and highlighting significant deviations.'
+      }
+    ]
+  }
+};
+
+function Portfolio() {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [formStatus, setFormStatus] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
 
-      // Update active section based on scroll position
       const sections = ['home', 'skills', 'projects', 'experience', 'contact'];
       const current = sections.find(section => {
         const element = document.getElementById(section);
@@ -49,7 +140,6 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Intersection Observer for scroll animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -85,7 +175,6 @@ function App() {
     e.preventDefault();
     setFormStatus('sending');
     
-    // Simulate form submission (connect to backend later)
     setTimeout(() => {
       setFormStatus('success');
       e.target.reset();
@@ -126,35 +215,7 @@ function App() {
     }
   ];
 
-  const projects = [
-    {
-      id: 1,
-      title: 'Credit Default Risk Analyzer',
-      description: 'Built a machine learning model to predict customer credit default with 92% ROC-AUC score using ensemble methods and SHAP for explainability.',
-      tech: ['Python', 'XGBoost', 'Scikit-learn', 'Streamlit', 'AWS SageMaker', 'Docker'],
-      github: 'https://github.com/i-aryann/Credit-Default-Prediction',
-      demo: 'https://credit-default-prediction-aryan.streamlit.app/',
-      highlights: ['92% ROC-AUC Score', 'SHAP Integration', 'Automated CI/CD Pipeline']
-    },
-    {
-      id: 2,
-      title: 'NLP Sentiment Analyzer',
-      description: 'Created a real-time sentiment analysis tool using BERT transformers for social media data with Kafka streaming integration.',
-      tech: ['NLP', 'BERT', 'Transformers', 'FastAPI', 'Kafka', 'React'],
-      github: '#',
-      demo: '#',
-      highlights: ['BERT Architecture', 'Real-time Processing', 'Interactive Dashboard']
-    },
-    {
-      id: 3,
-      title: 'Sales Forecasting Dashboard',
-      description: 'Designed an interactive dashboard with time series forecasting using LSTM networks for revenue prediction and scenario planning.',
-      tech: ['Time Series', 'LSTM', 'TensorFlow', 'Streamlit', 'PostgreSQL', 'Plotly'],
-      github: '#',
-      demo: '#',
-      highlights: ['LSTM Networks', 'What-if Scenarios', 'Automated Reporting']
-    }
-  ];
+  const projects = Object.values(projectsData);
 
   const experience = [
     {
@@ -218,7 +279,7 @@ function App() {
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <button 
-            onClick={() => scrollToSection('home')} 
+            onClick={() => navigate('/')}
             className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform"
             data-testid="logo-button"
           >
@@ -229,7 +290,7 @@ function App() {
             {['home', 'skills', 'projects', 'experience', 'contact'].map((section) => (
               <button
                 key={section}
-                onClick={() => scrollToSection(section)}
+                onClick={() => { navigate('/'); setTimeout(() => scrollToSection(section), 100); }}
                 className={`capitalize text-sm font-medium transition-all ${
                   activeSection === section
                     ? 'text-pink-400'
@@ -250,7 +311,6 @@ function App() {
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
           <button className="md:hidden text-white" data-testid="mobile-menu-button">
             <div className="w-6 h-0.5 bg-white mb-1" />
             <div className="w-6 h-0.5 bg-white mb-1" />
@@ -264,7 +324,7 @@ function App() {
         <div className="max-w-5xl mx-auto text-center z-10">
           <div className="scroll-reveal">
             <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
-              Hi, I'm{' '}
+              <span className="text-white">Hi, I'm{' '}</span>
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent animate-gradient">
                 Aryan
               </span>
@@ -292,7 +352,6 @@ function App() {
           </div>
         </div>
 
-        {/* Scroll Indicator */}
         <button 
           onClick={() => scrollToSection('skills')}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer z-10"
@@ -352,7 +411,8 @@ function App() {
             {projects.map((project, index) => (
               <Card
                 key={project.id}
-                className="scroll-reveal bg-gradient-to-br from-zinc-900/90 to-zinc-800/90 backdrop-blur-sm border border-purple-500/30 p-8 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-500 hover:-translate-y-2 group"
+                onClick={() => navigate(`/project/${project.slug}`)}
+                className="scroll-reveal bg-gradient-to-br from-zinc-900/90 to-zinc-800/90 backdrop-blur-sm border border-purple-500/30 p-8 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
                 style={{ animationDelay: `${index * 150}ms` }}
                 data-testid={`project-card-${project.id}`}
               >
@@ -360,10 +420,12 @@ function App() {
                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-gray-400 mb-4 leading-relaxed">{project.description}</p>
+                <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3">
+                  {project.description.split('\n\n')[0]}
+                </p>
                 
                 <div className="mb-4">
-                  {project.highlights.map((highlight, i) => (
+                  {project.highlights.slice(0, 2).map((highlight, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm text-pink-300 mb-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-pink-400" />
                       {highlight}
@@ -372,38 +434,20 @@ function App() {
                 </div>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tech.map((tech, i) => (
+                  {project.tech.slice(0, 4).map((tech, i) => (
                     <Badge key={i} className="bg-blue-500/10 text-blue-300 border-blue-500/30">
                       {tech}
                     </Badge>
                   ))}
+                  {project.tech.length > 4 && (
+                    <Badge className="bg-blue-500/10 text-blue-300 border-blue-500/30">
+                      +{project.tech.length - 4} more
+                    </Badge>
+                  )}
                 </div>
 
-                <div className="flex gap-3">
-                  {project.github !== '#' && (
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"
-                      data-testid={`github-link-${project.id}`}
-                    >
-                      <Github className="w-4 h-4" />
-                      Code
-                    </a>
-                  )}
-                  {project.demo !== '#' && (
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors"
-                      data-testid={`demo-link-${project.id}`}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      Live Demo
-                    </a>
-                  )}
+                <div className="text-purple-400 text-sm font-medium flex items-center gap-2">
+                  View Details <ExternalLink className="w-4 h-4" />
                 </div>
               </Card>
             ))}
@@ -420,7 +464,6 @@ function App() {
           </div>
 
           <div className="relative">
-            {/* Timeline Line */}
             <div className="absolute left-0 md:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500 via-pink-500 to-blue-500" />
 
             {experience.map((exp, index) => (
@@ -430,7 +473,6 @@ function App() {
                 style={{ animationDelay: `${index * 100}ms` }}
                 data-testid={`experience-item-${index}`}
               >
-                {/* Timeline Dot */}
                 <div className="absolute left-0 md:left-8 -translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-pink-500/50" />
 
                 <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all">
@@ -468,7 +510,6 @@ function App() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Contact Info */}
             <div className="space-y-6 scroll-reveal">
               <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all" data-testid="contact-email">
                 <div className="flex items-center gap-4">
@@ -530,7 +571,6 @@ function App() {
               </Card>
             </div>
 
-            {/* Contact Form */}
             <Card className="scroll-reveal bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8" data-testid="contact-form">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -595,6 +635,162 @@ function App() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function ProjectDetail() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+  const project = projectsData[slug];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  if (!project) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-white mb-4">Project Not Found</h1>
+          <Button onClick={() => navigate('/')} className="bg-gradient-to-r from-purple-500 to-pink-500">
+            Go Back Home
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="App min-h-screen">
+      {/* Background */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-black" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse-slower" />
+        <div className="grid-overlay" />
+      </div>
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-purple-500/20">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <button 
+            onClick={() => navigate('/')}
+            className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform"
+          >
+            ARYAN<span className="text-white/50 font-light">.ai</span>
+          </button>
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 text-purple-400 hover:text-pink-400 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to Portfolio
+          </button>
+        </div>
+      </nav>
+
+      {/* Project Hero */}
+      <section className="relative pt-32 pb-16 px-6">
+        <div className="max-w-5xl mx-auto text-center z-10 relative">
+          <div className="mb-6 flex items-center justify-center gap-4 flex-wrap">
+            <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/50 px-4 py-1">
+              {project.category}
+            </Badge>
+            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/50 px-4 py-1">
+              {project.year}
+            </Badge>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+            {project.title}
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            {project.tagline}
+          </p>
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            {project.github !== '#' && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-purple-500/50"
+              >
+                <Github className="w-5 h-5" />
+                View Code
+              </a>
+            )}
+            {project.demo !== '#' && (
+              <a
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 border-2 border-white/20 bg-white/5 hover:bg-white/10 text-white rounded-lg font-medium transition-all backdrop-blur-sm"
+              >
+                <ExternalLink className="w-5 h-5" />
+                Live Demo
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Project Content */}
+      <section className="relative py-16 px-6">
+        <div className="max-w-5xl mx-auto z-10 relative">
+          {/* Description */}
+          <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8 mb-8">
+            <h2 className="text-3xl font-bold text-white mb-6 border-l-4 border-purple-500 pl-4">Overview</h2>
+            {project.description.split('\n\n').map((para, i) => (
+              <p key={i} className="text-gray-300 text-lg leading-relaxed mb-4 last:mb-0">
+                {para}
+              </p>
+            ))}
+          </Card>
+
+          {/* Key Features */}
+          <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8 mb-8">
+            <h2 className="text-3xl font-bold text-white mb-6 border-l-4 border-pink-500 pl-4">Key Features</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {project.features.map((feature, i) => (
+                <Card key={i} className="bg-black/50 border border-purple-500/20 p-6 hover:border-pink-500/50 transition-all">
+                  <h3 className="text-xl font-bold text-pink-400 mb-3">{feature.title}</h3>
+                  <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
+                </Card>
+              ))}
+            </div>
+          </Card>
+
+          {/* Tech Stack */}
+          <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8">
+            <h2 className="text-3xl font-bold text-white mb-6 border-l-4 border-blue-500 pl-4">Tech Stack</h2>
+            <div className="flex flex-wrap gap-3">
+              {project.tech.map((tech, i) => (
+                <Badge key={i} className="bg-blue-500/10 text-blue-300 border-blue-500/30 px-4 py-2 text-base">
+                  {tech}
+                </Badge>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative py-8 px-6 border-t border-white/5 mt-16">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-gray-500">© 2025 Aryan Gupta. Built with React & Tailwind CSS.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Portfolio />} />
+        <Route path="/project/:slug" element={<ProjectDetail />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
