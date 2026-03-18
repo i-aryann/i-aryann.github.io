@@ -1,4 +1,4 @@
-/* Modern Portfolio Styles */
+/* Modern Portfolio Styles - Vibrant Theme */
 
 /* Smooth Scroll */
 html {
@@ -11,15 +11,16 @@ html {
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
+  background: #000000;
 }
 
-/* Grid Overlay Effect */
+/* Grid Overlay Effect - Lighter */
 .grid-overlay {
   position: absolute;
   inset: 0;
   background-image: 
-    linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(168, 85, 247, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.02) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
 }
@@ -41,11 +42,11 @@ html {
 
 @keyframes pulse-slow {
   0%, 100% {
-    opacity: 0.3;
+    opacity: 0.4;
     transform: scale(1);
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.6;
     transform: scale(1.1);
   }
 }
@@ -56,17 +57,32 @@ html {
 
 @keyframes pulse-slower {
   0%, 100% {
-    opacity: 0.2;
+    opacity: 0.3;
     transform: scale(1);
   }
   50% {
-    opacity: 0.4;
+    opacity: 0.5;
     transform: scale(1.15);
   }
 }
 
 .animate-pulse-slower {
   animation: pulse-slower 10s ease-in-out infinite;
+}
+
+@keyframes pulse-slowest {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-slowest {
+  animation: pulse-slowest 12s ease-in-out infinite;
 }
 
 /* Scroll Reveal Animations */
@@ -89,22 +105,22 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Purple/Pink */
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0e27;
+  background: #000000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #10b981, #06b6d4);
+  background: linear-gradient(180deg, #a855f7, #ec4899);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #059669, #0891b2);
+  background: linear-gradient(180deg, #9333ea, #db2777);
 }
 
 /* Responsive Typography */
@@ -134,14 +150,23 @@ button, a {
   }
 }
 
-/* Selection Color */
+/* Selection Color - Purple/Pink */
 ::selection {
-  background: rgba(6, 182, 212, 0.3);
+  background: rgba(236, 72, 153, 0.3);
   color: white;
 }
 
-/* Focus Visible */
+/* Focus Visible - Pink */
 *:focus-visible {
-  outline: 2px solid #06b6d4;
+  outline: 2px solid #ec4899;
   outline-offset: 2px;
+}
+
+/* Glow Effects */
+.glow-purple {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.glow-pink {
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.3);
 }
