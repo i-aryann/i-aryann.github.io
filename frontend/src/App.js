@@ -814,30 +814,26 @@ function ProjectDetail() {
           
           {/* GitHub and Live Demo Buttons */}
           <div className="flex items-center justify-center gap-6 flex-wrap mb-4">
-            {project.github !== '#' && (
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-purple-500/50 hover:scale-105"
-                data-testid="project-github-button"
-              >
-                <Github className="w-6 h-6" />
-                View Code
-              </a>
-            )}
-            {project.demo !== '#' && (
-              <a
-                href={project.demo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-pink-500/50 hover:scale-105"
-                data-testid="project-demo-button"
-              >
-                <ExternalLink className="w-6 h-6" />
-                Live Demo
-              </a>
-            )}
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-purple-500/50 hover:scale-105"
+              data-testid="project-github-button"
+            >
+              <Github className="w-6 h-6" />
+              View Code
+            </a>
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-pink-500/50 hover:scale-105"
+              data-testid="project-demo-button"
+            >
+              <ExternalLink className="w-6 h-6" />
+              Live Demo
+            </a>
           </div>
         </div>
       </section>
