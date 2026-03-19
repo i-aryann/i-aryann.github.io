@@ -1,0 +1,8 @@
+Every time user edits:
+
+1️⃣ Test locally
+npm run dev
+2️⃣ Build
+npm run build
+3️⃣ Deploy
+npm run deploy
