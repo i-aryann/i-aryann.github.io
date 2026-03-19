@@ -1,0 +1,21 @@
+# robots.txt — Aryan Gupta · AI Engineer Portfolio
+# https://aryangupta.work
+
+# ─── Allow all major crawlers ───────────────────────────────────────────────
+User-agent: *
+Allow: /
+
+# ─── Block build artifacts from being indexed ───────────────────────────────
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.map$
+
+# ─── Crawl-rate hints ───────────────────────────────────────────────────────
+User-agent: Googlebot
+Crawl-delay: 1
+
+User-agent: Bingbot
+Crawl-delay: 2
+
+# ─── Sitemap location ───────────────────────────────────────────────────────
+Sitemap: https://aryangupta.work/sitemap.xml

@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState, lazy, Suspense, useRef } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Button } from './components/ui/button';
@@ -154,12 +154,49 @@ function PageTransition({ children }) {
   );
 }
 
+// ─── SEO helper – updates <title>, meta tags & canonical per route ────────────
+const updateSEO = ({ title, description, canonical }) => {
+  // Title
+  document.title = title;
+
+  // Meta description
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', description);
+
+  // Canonical link
+  const url = canonical || 'https://aryangupta.work/';
+  let canonicalEl = document.querySelector('link[rel="canonical"]');
+  if (canonicalEl) canonicalEl.setAttribute('href', url);
+
+  // Open Graph
+  const ogUrl   = document.querySelector('meta[property="og:url"]');
+  const ogTitle  = document.querySelector('meta[property="og:title"]');
+  const ogDesc   = document.querySelector('meta[property="og:description"]');
+  if (ogUrl)   ogUrl.setAttribute('content', url);
+  if (ogTitle)  ogTitle.setAttribute('content', title);
+  if (ogDesc)   ogDesc.setAttribute('content', description);
+
+  // Twitter
+  const twTitle = document.querySelector('meta[name="twitter:title"]');
+  const twDesc  = document.querySelector('meta[name="twitter:description"]');
+  if (twTitle) twTitle.setAttribute('content', title);
+  if (twDesc)  twDesc.setAttribute('content', description);
+};
+
+// ─── Central GA4 tracking helper ────────────────────────────────────────────
+const trackEvent = (eventName, params = {}) => {
+  if (window.gtag) {
+    window.gtag('event', eventName, params);
+  }
+};
+
 function Portfolio() {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [formStatus, setFormStatus] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const sectionViewedRef = useRef({});
 
   useEffect(() => {
     const handleScroll = () => {
@@ -181,6 +218,16 @@ function Portfolio() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // ─── Set page SEO on mount ────────────────────────────────────────────────
+  useEffect(() => {
+    updateSEO({
+      title: 'Aryan Gupta | AI Engineer · LLM · RAG · MLOps Portfolio',
+      description:
+        'Aryan Gupta — AI Engineer specialising in LLMs, Retrieval-Augmented Generation (RAG), MLOps, and end-to-end machine-learning systems. Explore projects in NLP, Deep Learning, AWS SageMaker, and production ML pipelines.',
+      canonical: 'https://aryangupta.work/',
+    });
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -196,6 +243,38 @@ function Portfolio() {
     document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
+  }, []);
+
+  // ─── Track section views (scroll depth) ──────────────────────────────────
+  useEffect(() => {
+    const sections = ['home', 'skills', 'projects', 'experience', 'contact'];
+    const sectionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !sectionViewedRef.current[entry.target.id]) {
+            sectionViewedRef.current[entry.target.id] = true;
+            trackEvent('section_viewed', {
+              section_name: entry.target.id,
+              event_category: 'Engagement',
+            });
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) sectionObserver.observe(el);
+    });
+    return () => sectionObserver.disconnect();
+  }, []);
+
+  // ─── Time-on-page engagement milestones ──────────────────────────────────
+  useEffect(() => {
+    const t30 = setTimeout(() => trackEvent('engaged_30s', { event_category: 'Engagement' }), 30000);
+    const t60 = setTimeout(() => trackEvent('engaged_60s', { event_category: 'Engagement' }), 60000);
+    const t3m = setTimeout(() => trackEvent('engaged_3min', { event_category: 'Engagement' }), 180000);
+    return () => { clearTimeout(t30); clearTimeout(t60); clearTimeout(t3m); };
   }, []);
 
   // Close mobile menu on section click
@@ -221,12 +300,36 @@ function Portfolio() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormStatus('sending');
-    
-    setTimeout(() => {
-      setFormStatus('success');
-      e.target.reset();
+    trackEvent('contact_form_submitted', {
+      event_category: 'Contact',
+      event_label: 'Portfolio Contact Form',
+    });
+
+    const form = e.target;
+    const data = new FormData(form);
+
+    try {
+      // ⚠️ Formspree endpoint injected
+      const response = await fetch('https://formspree.io/f/xqeynyyb', {
+        method: 'POST',
+        body: data,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        setFormStatus('success');
+        form.reset();
+        setTimeout(() => setFormStatus(''), 3000);
+      } else {
+        setFormStatus('error');
+        setTimeout(() => setFormStatus(''), 3000);
+      }
+    } catch (error) {
+      setFormStatus('error');
       setTimeout(() => setFormStatus(''), 3000);
-    }, 1000);
+    }
   };
 
   const skills = [
@@ -338,7 +441,11 @@ function Portfolio() {
             {['home', 'skills', 'projects', 'experience', 'contact'].map((section) => (
               <button
                 key={section}
-                onClick={() => { navigate('/'); setTimeout(() => scrollToSection(section), 100); }}
+                onClick={() => {
+                  trackEvent('nav_click', { event_category: 'Navigation', section_name: section });
+                  navigate('/');
+                  setTimeout(() => scrollToSection(section), 100);
+                }}
                 className={`capitalize text-sm font-medium transition-all ${
                   activeSection === section
                     ? 'text-pink-400'
@@ -350,7 +457,10 @@ function Portfolio() {
               </button>
             ))}
             <a
-              href="#resume"
+              href={`/Resume.pdf?t=${Date.now()}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent('resume_viewed', { event_category: 'Resume', event_label: 'Desktop Nav' })}
               className="px-4 py-2 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-all text-sm font-medium flex items-center gap-2"
               data-testid="resume-button"
             >
@@ -396,8 +506,13 @@ function Portfolio() {
                 </button>
               ))}
               <a
-                href="#resume"
-                onClick={() => setMobileMenuOpen(false)}
+                href={`/Resume.pdf?t=${Date.now()}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  trackEvent('resume_viewed', { event_category: 'Resume', event_label: 'Mobile Nav' });
+                }}
                 className="px-6 py-3 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 text-lg font-medium flex items-center gap-2"
               >
                 <FileText className="w-5 h-5" />
@@ -423,14 +538,20 @@ function Portfolio() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Button
-                onClick={() => scrollToSection('projects')}
+                onClick={() => {
+                  trackEvent('cta_click', { event_category: 'Hero', event_label: 'View My Work' });
+                  scrollToSection('projects');
+                }}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-purple-500/50 transition-all"
                 data-testid="view-work-button"
               >
                 View My Work
               </Button>
               <Button
-                onClick={() => scrollToSection('contact')}
+                onClick={() => {
+                  trackEvent('cta_click', { event_category: 'Hero', event_label: 'Get In Touch' });
+                  scrollToSection('contact');
+                }}
                 variant="outline"
                 className="border-2 border-white/20 bg-white/5 hover:bg-white/10 text-white px-8 py-6 text-lg rounded-lg backdrop-blur-sm"
                 data-testid="contact-button"
@@ -500,7 +621,14 @@ function Portfolio() {
             {projects.map((project, index) => (
               <Card
                 key={project.id}
-                onClick={() => navigate(`/project/${project.slug}`)}
+                onClick={() => {
+                  trackEvent('project_card_clicked', {
+                    event_category: 'Projects',
+                    project_name: project.title,
+                    project_slug: project.slug,
+                  });
+                  navigate(`/project/${project.slug}`);
+                }}
                 className="scroll-reveal bg-gradient-to-br from-zinc-900/90 to-zinc-800/90 backdrop-blur-sm border border-purple-500/30 p-8 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
                 style={{ animationDelay: `${index * 150}ms` }}
                 data-testid={`project-card-${project.id}`}
@@ -607,7 +735,11 @@ function Portfolio() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Email</p>
-                    <a href="mailto:aryangupta.7263@gmail.com" className="text-white hover:text-purple-400 transition-colors">
+                    <a
+                      href="mailto:aryangupta.7263@gmail.com"
+                      onClick={() => trackEvent('social_link_clicked', { event_category: 'Contact', event_label: 'Email' })}
+                      className="text-white hover:text-purple-400 transition-colors"
+                    >
                       aryangupta.7263@gmail.com
                     </a>
                   </div>
@@ -621,7 +753,11 @@ function Portfolio() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">Phone</p>
-                    <a href="tel:+917534090544" className="text-white hover:text-pink-400 transition-colors">
+                    <a
+                      href="tel:+917534090544"
+                      onClick={() => trackEvent('social_link_clicked', { event_category: 'Contact', event_label: 'Phone' })}
+                      className="text-white hover:text-pink-400 transition-colors"
+                    >
                       +91 7534090544
                     </a>
                   </div>
@@ -651,6 +787,7 @@ function Portfolio() {
                       href="https://www.linkedin.com/in/aryangupta7263" 
                       target="_blank" 
                       rel="noopener noreferrer"
+                      onClick={() => trackEvent('social_link_clicked', { event_category: 'Contact', event_label: 'LinkedIn' })}
                       className="text-white hover:text-purple-400 transition-colors"
                     >
                       linkedin.com/in/aryangupta7263
@@ -702,6 +839,8 @@ function Portfolio() {
                     'Sending...'
                   ) : formStatus === 'success' ? (
                     '✓ Message Sent!'
+                  ) : formStatus === 'error' ? (
+                    '❌ Sending Failed'
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
@@ -734,7 +873,14 @@ function ProjectDetail() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    if (project) {
+      updateSEO({
+        title: `${project.title} | Aryan Gupta – AI Engineer`,
+        description: `${project.tagline}. Built with ${project.tech.slice(0, 5).join(', ')}. ${project.description.split('\n\n')[0].slice(0, 120)}...`,
+        canonical: `https://aryangupta.work/project/${project.slug}`,
+      });
+    }
+  }, [project]);
 
   const handleBackClick = () => {
     navigate('/');
@@ -818,6 +964,12 @@ function ProjectDetail() {
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent('project_github_clicked', {
+                event_category: 'Projects',
+                project_name: project.title,
+                project_slug: project.slug,
+                event_label: 'View Code',
+              })}
               className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-purple-500/50 hover:scale-105"
               data-testid="project-github-button"
             >
@@ -828,6 +980,12 @@ function ProjectDetail() {
               href={project.demo}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent('project_demo_clicked', {
+                event_category: 'Projects',
+                project_name: project.title,
+                project_slug: project.slug,
+                event_label: 'Live Demo',
+              })}
               className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-pink-500/50 hover:scale-105"
               data-testid="project-demo-button"
             >
