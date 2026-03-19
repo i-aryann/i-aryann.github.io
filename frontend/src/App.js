@@ -813,16 +813,16 @@ function ProjectDetail() {
           </p>
           
           {/* GitHub and Live Demo Buttons */}
-          <div className="flex items-center justify-center gap-4 flex-wrap">
+          <div className="flex items-center justify-center gap-6 flex-wrap mb-4">
             {project.github !== '#' && (
               <a
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-purple-500/50"
+                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-purple-500/50 hover:scale-105"
                 data-testid="project-github-button"
               >
-                <Github className="w-5 h-5" />
+                <Github className="w-6 h-6" />
                 View Code
               </a>
             )}
@@ -831,10 +831,10 @@ function ProjectDetail() {
                 href={project.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-3 border-2 border-white/20 bg-white/5 hover:bg-white/10 text-white rounded-lg font-medium transition-all backdrop-blur-sm"
+                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-pink-500/50 hover:scale-105"
                 data-testid="project-demo-button"
               >
-                <ExternalLink className="w-5 h-5" />
+                <ExternalLink className="w-6 h-6" />
                 Live Demo
               </a>
             )}
