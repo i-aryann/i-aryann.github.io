@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import '@/App.css';
-import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,7 +22,8 @@ import {
   Award,
   Briefcase,
   GraduationCap,
-  ArrowLeft
+  ArrowLeft,
+  X
 } from 'lucide-react';
 
 // Project Data with full details
@@ -114,10 +115,50 @@ const projectsData = {
   }
 };
 
+// Loading component
+function PageLoader() {
+  return (
+    <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-white text-lg">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+// Page transition wrapper
+function PageTransition({ children }) {
+  const location = useLocation();
+  const [displayLocation, setDisplayLocation] = useState(location);
+  const [transitionStage, setTransitionStage] = useState('fadeIn');
+
+  useEffect(() => {
+    if (location !== displayLocation) {
+      setTransitionStage('fadeOut');
+    }
+  }, [location, displayLocation]);
+
+  return (
+    <div
+      className={`page-transition ${transitionStage}`}
+      onAnimationEnd={() => {
+        if (transitionStage === 'fadeOut') {
+          setTransitionStage('fadeIn');
+          setDisplayLocation(location);
+        }
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 function Portfolio() {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [formStatus, setFormStatus] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -156,6 +197,12 @@ function Portfolio() {
 
     return () => observer.disconnect();
   }, []);
+
+  // Close mobile menu on section click
+  const handleMobileNavClick = (sectionId) => {
+    setMobileMenuOpen(false);
+    scrollToSection(sectionId);
+  };
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -286,6 +333,7 @@ function Portfolio() {
             ARYAN<span className="text-white/50 font-light">.ai</span>
           </button>
 
+          {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             {['home', 'skills', 'projects', 'experience', 'contact'].map((section) => (
               <button
@@ -311,12 +359,53 @@ function Portfolio() {
             </a>
           </div>
 
-          <button className="md:hidden text-white" data-testid="mobile-menu-button">
-            <div className="w-6 h-0.5 bg-white mb-1" />
-            <div className="w-6 h-0.5 bg-white mb-1" />
-            <div className="w-6 h-0.5 bg-white" />
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden text-white z-50" 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            data-testid="mobile-menu-button"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <div className="space-y-1.5">
+                <div className="w-6 h-0.5 bg-white" />
+                <div className="w-6 h-0.5 bg-white" />
+                <div className="w-6 h-0.5 bg-white" />
+              </div>
+            )}
           </button>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        {mobileMenuOpen && (
+          <div className="md:hidden fixed inset-0 top-16 bg-black/95 backdrop-blur-lg z-40 mobile-menu-slide">
+            <div className="flex flex-col items-center justify-center h-full gap-8 px-6">
+              {['home', 'skills', 'projects', 'experience', 'contact'].map((section) => (
+                <button
+                  key={section}
+                  onClick={() => handleMobileNavClick(section)}
+                  className={`capitalize text-2xl font-medium transition-all ${
+                    activeSection === section
+                      ? 'text-pink-400'
+                      : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {section}
+                </button>
+              ))}
+              <a
+                href="#resume"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-6 py-3 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 text-lg font-medium flex items-center gap-2"
+              >
+                <FileText className="w-5 h-5" />
+                Resume
+              </a>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
@@ -324,7 +413,7 @@ function Portfolio() {
         <div className="max-w-5xl mx-auto text-center z-10">
           <div className="scroll-reveal">
             <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
-              <span className="text-white">Hi, I'm{' '}</span>
+              <span className="text-white">Hi, I'm </span>
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent animate-gradient">
                 Aryan
               </span>
@@ -647,6 +736,22 @@ function ProjectDetail() {
     window.scrollTo(0, 0);
   }, []);
 
+  const handleBackClick = () => {
+    navigate('/');
+    setTimeout(() => {
+      const projectsSection = document.getElementById('projects');
+      if (projectsSection) {
+        const offset = 80;
+        const elementPosition = projectsSection.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  };
+
   if (!project) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black">
@@ -680,7 +785,7 @@ function ProjectDetail() {
             ARYAN<span className="text-white/50 font-light">.ai</span>
           </button>
           <button
-            onClick={() => navigate('/')}
+            onClick={handleBackClick}
             className="flex items-center gap-2 text-purple-400 hover:text-pink-400 transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -706,6 +811,8 @@ function ProjectDetail() {
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
             {project.tagline}
           </p>
+          
+          {/* GitHub and Live Demo Buttons */}
           <div className="flex items-center justify-center gap-4 flex-wrap">
             {project.github !== '#' && (
               <a
@@ -713,6 +820,7 @@ function ProjectDetail() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-purple-500/50"
+                data-testid="project-github-button"
               >
                 <Github className="w-5 h-5" />
                 View Code
@@ -724,6 +832,7 @@ function ProjectDetail() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-6 py-3 border-2 border-white/20 bg-white/5 hover:bg-white/10 text-white rounded-lg font-medium transition-all backdrop-blur-sm"
+                data-testid="project-demo-button"
               >
                 <ExternalLink className="w-5 h-5" />
                 Live Demo
@@ -786,10 +895,12 @@ function ProjectDetail() {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Portfolio />} />
-        <Route path="/project/:slug" element={<ProjectDetail />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Portfolio />} />
+          <Route path="/project/:slug" element={<ProjectDetail />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }
