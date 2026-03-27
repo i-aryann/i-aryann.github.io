@@ -4,12 +4,12 @@ import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } fro
 import { Button } from './components/ui/button';
 import { Card } from './components/ui/card';
 import { Badge } from './components/ui/badge';
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  MapPin, 
-  Phone, 
+import {
+  Github,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
   ExternalLink,
   Code2,
   Database,
@@ -23,15 +23,50 @@ import {
   Briefcase,
   GraduationCap,
   ArrowLeft,
-  X
+  X,
+  Layers
 } from 'lucide-react';
 
 // Project Data with full details
 const projectsData = {
-  'credit-default': {
+  'LLM-RAG': {
     id: 1,
+    slug: 'LLM-RAG',
+    title: 'Compliance RAG System',
+    cardTagline: 'RAG system using LLM API, LangChain and Qdrant DB, served via FastAPI, deployed on AWS with CI/CD deployment.',
+    tagline: 'Cutting compliance rules research time for banking institutions with AI-powered retrieval over complex regulations',
+    year: '2026',
+    category: 'Generative AI',
+    description: `A compliance research assistant using a Retrieval-Augmented Generation (RAG) pipeline to extract precise answers from large regulatory documents.\n\n The system combines semantic vector search(Qdrant DB) with keyword-based retrieval (BM25) to enable hybrid search, improving recall across complex queries.\n\n Retrieved results are further refined using re-ranking (cross-encoder models) to prioritize the most relevant context before passing it to LLM via LangChain.\n\n The system includes token-aware chunking, context compression, and Citation-Based responses to ensure accuracy and traceability—critical for compliance workflows.\n\n Built with FastAPI and deployed on Amazon Web Services EC2 using Docker and Nginx, it delivers low-latency, scalable, and production-ready performance.`,
+    tech: ['LLM', "RAG", 'Vector DB', 'Hybrid Search', "Pydantic", "LangChain", 'FastAPI', 'AWS Cloud', "Docker", "Github Actions", 'Python'],
+    github: 'https://github.com/i-aryann/ComplianceBrain-RAG',
+    demo: 'https://compliance-rag.duckdns.org/',
+    architecture: '/regulatory_rag.png', // TODO: Add your image name here after uploading to public/ folder (e.g., '/nlp-arch.png')
+    highlights: ['Hybrid Retrieval + Re-ranking Pipeline', 'Source-Cited Compliance Answers'],
+    features: [
+      {
+        title: 'Source-Cited Answers',
+        desc: 'Provides responses with traceable document references to ensure transparency and compliance reliability.'
+      },
+      {
+        title: 'Token-Optimized Context Handling',
+        desc: 'Efficiently selects and compresses context to reduce cost while maintaining answer accuracy.'
+      },
+      {
+        title: 'Hybrid Search Retrieval and Re-ranking',
+        desc: ' First combines semantic and keyword search to improve recall and then prioritizes most relevant results using deep relevance scoring before generating final responses'
+      },
+      {
+        title: 'Cloud Deployment & CI/CD Automation',
+        desc: 'Ensures scalable deployment with automated build, testing, and seamless continuous delivery updates over AWS Cloud.'
+      }
+    ]
+  },
+  'credit-default': {
+    id: 2,
     slug: 'credit-default',
     title: 'Credit Default Risk Analyzer',
+    cardTagline: 'Predicting customer credit repayment default with ML',
     tagline: 'Predicting customer credit repayment default using machine learning',
     year: '2024',
     category: 'Machine Learning',
@@ -39,6 +74,7 @@ const projectsData = {
     tech: ['Python', 'XGBoost', 'Scikit-learn', 'Streamlit', 'AWS SageMaker', 'Docker', 'Pandas', 'Flask API'],
     github: 'https://github.com/i-aryann/Credit-Default-Prediction',
     demo: 'https://credit-default-prediction-aryan.streamlit.app/',
+    architecture: '', // TODO: Add your image name here after uploading to public/ folder (e.g., '/credit-arch.png')
     highlights: ['92% ROC-AUC Score', 'SHAP Integration', 'Automated CI/CD Pipeline'],
     features: [
       {
@@ -59,37 +95,12 @@ const projectsData = {
       }
     ]
   },
-  'nlp-sentiment': {
-    id: 2,
-    slug: 'nlp-sentiment',
-    title: 'NLP Sentiment Analyzer',
-    tagline: 'Understanding Social Media Sentiment with Transformers',
-    year: '2023',
-    category: 'NLP',
-    description: `In the age of social media, understanding public opinion is vital for brand management. This tool analyzes social media feeds to determine the sentiment (positive, negative, neutral) regarding specific topics or brand mentions in real-time.\n\nBuilt upon the BERT architecture, the model understands context and nuance better than traditional bag-of-words approaches. It processes thousands of tweets per minute and visualizes the aggregate sentiment trends over time.`,
-    tech: ['NLP', 'BERT', 'Transformers', 'FastAPI', 'Kafka', 'React', 'Hugging Face', 'Python'],
-    github: '#',
-    demo: '#',
-    highlights: ['BERT Architecture', 'Real-time Processing', 'Interactive Dashboard'],
-    features: [
-      {
-        title: 'Transformer Architecture',
-        desc: 'Uses a fine-tuned BERT model for state-of-the-art accuracy in understanding context and sarcasm.'
-      },
-      {
-        title: 'Real-time Processing',
-        desc: 'Ingests and processes live Twitter/X data streams using Apache Kafka and Spark Streaming.'
-      },
-      {
-        title: 'Interactive Visualization',
-        desc: 'Frontend dashboard built with React and D3.js to visualize sentiment shifts and trending keywords.'
-      }
-    ]
-  },
+
   'sales-forecasting': {
     id: 3,
     slug: 'sales-forecasting',
     title: 'Sales Forecasting Dashboard',
+    cardTagline: 'Predicting Future Revenue with Time Series Analysis',
     tagline: 'Predicting Future Revenue with Time Series Analysis',
     year: '2023',
     category: 'Data Analytics',
@@ -97,6 +108,7 @@ const projectsData = {
     tech: ['Time Series', 'LSTM', 'TensorFlow', 'Streamlit', 'PostgreSQL', 'Plotly', 'Keras', 'Pandas'],
     github: '#',
     demo: '#',
+    architecture: '', // TODO: Add your image name here after uploading to public/ folder (e.g., '/sales-arch.png')
     highlights: ['LSTM Networks', 'What-if Scenarios', 'Automated Reporting'],
     features: [
       {
@@ -169,18 +181,18 @@ const updateSEO = ({ title, description, canonical }) => {
   if (canonicalEl) canonicalEl.setAttribute('href', url);
 
   // Open Graph
-  const ogUrl   = document.querySelector('meta[property="og:url"]');
-  const ogTitle  = document.querySelector('meta[property="og:title"]');
-  const ogDesc   = document.querySelector('meta[property="og:description"]');
-  if (ogUrl)   ogUrl.setAttribute('content', url);
-  if (ogTitle)  ogTitle.setAttribute('content', title);
-  if (ogDesc)   ogDesc.setAttribute('content', description);
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogUrl) ogUrl.setAttribute('content', url);
+  if (ogTitle) ogTitle.setAttribute('content', title);
+  if (ogDesc) ogDesc.setAttribute('content', description);
 
   // Twitter
   const twTitle = document.querySelector('meta[name="twitter:title"]');
-  const twDesc  = document.querySelector('meta[name="twitter:description"]');
+  const twDesc = document.querySelector('meta[name="twitter:description"]');
   if (twTitle) twTitle.setAttribute('content', title);
-  if (twDesc)  twDesc.setAttribute('content', description);
+  if (twDesc) twDesc.setAttribute('content', description);
 };
 
 // ─── Central GA4 tracking helper ────────────────────────────────────────────
@@ -202,7 +214,7 @@ function Portfolio() {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
 
-      const sections = ['home', 'skills', 'projects', 'experience', 'contact'];
+      const sections = ['home', 'projects', 'skills', 'experience', 'contact'];
       const current = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -247,7 +259,7 @@ function Portfolio() {
 
   // ─── Track section views (scroll depth) ──────────────────────────────────
   useEffect(() => {
-    const sections = ['home', 'skills', 'projects', 'experience', 'contact'];
+    const sections = ['home', 'projects', 'skills', 'experience', 'contact'];
     const sectionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -421,14 +433,13 @@ function Portfolio() {
       </div>
 
       {/* Sticky Navigation */}
-      <nav 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'bg-black/80 backdrop-blur-lg border-b border-purple-500/20 shadow-lg shadow-purple-500/5' : 'bg-transparent'
-        }`}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-black/80 backdrop-blur-lg border-b border-purple-500/20 shadow-lg shadow-purple-500/5' : 'bg-transparent'
+          }`}
         data-testid="main-navigation"
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button 
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between relative">
+          <button
             onClick={() => navigate('/')}
             className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform"
             data-testid="logo-button"
@@ -436,9 +447,9 @@ function Portfolio() {
             ARYAN<span className="text-white/50 font-light">.ai</span>
           </button>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            {['home', 'skills', 'projects', 'experience', 'contact'].map((section) => (
+          {/* Desktop Menu Center Links */}
+          <div className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-8">
+            {['home', 'projects', 'skills', 'experience'].map((section) => (
               <button
                 key={section}
                 onClick={() => {
@@ -446,32 +457,45 @@ function Portfolio() {
                   navigate('/');
                   setTimeout(() => scrollToSection(section), 100);
                 }}
-                className={`capitalize text-sm font-medium transition-all ${
-                  activeSection === section
-                    ? 'text-pink-400'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`capitalize text-sm font-medium transition-all ${activeSection === section
+                  ? 'text-pink-400'
+                  : 'text-gray-400 hover:text-white'
+                  }`}
                 data-testid={`nav-${section}`}
               >
                 {section}
               </button>
             ))}
+          </div>
+
+          {/* Desktop Menu Right Buttons */}
+          <div className="hidden md:flex items-center gap-4 ml-auto">
+            <button
+              onClick={() => {
+                trackEvent('nav_click', { event_category: 'Navigation', section_name: 'contact' });
+                navigate('/');
+                setTimeout(() => scrollToSection('contact'), 100);
+              }}
+              className="px-4 py-2 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-all text-sm font-medium flex items-center gap-2"
+              data-testid="nav-contact"
+            >
+              Start a Conversation
+            </button>
             <a
               href={`/Resume.pdf?t=${Date.now()}`}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => trackEvent('resume_viewed', { event_category: 'Resume', event_label: 'Desktop Nav' })}
-              className="px-4 py-2 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-all text-sm font-medium flex items-center gap-2"
+              className="px-4 py-2 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-all text-sm font-medium flex items-center justify-center gap-2"
               data-testid="resume-button"
             >
-              <FileText className="w-4 h-4" />
-              Resume
+              Get My Resume
             </a>
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden text-white z-50" 
+          <button
+            className="md:hidden text-white z-50"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="mobile-menu-button"
             aria-label="Toggle menu"
@@ -492,19 +516,24 @@ function Portfolio() {
         {mobileMenuOpen && (
           <div className="md:hidden fixed inset-0 top-16 bg-black/95 backdrop-blur-lg z-40 mobile-menu-slide">
             <div className="flex flex-col items-center justify-center h-full gap-8 px-6">
-              {['home', 'skills', 'projects', 'experience', 'contact'].map((section) => (
+              {['home', 'projects', 'skills', 'experience'].map((section) => (
                 <button
                   key={section}
                   onClick={() => handleMobileNavClick(section)}
-                  className={`capitalize text-2xl font-medium transition-all ${
-                    activeSection === section
-                      ? 'text-pink-400'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
+                  className={`capitalize text-2xl font-medium transition-all ${activeSection === section
+                    ? 'text-pink-400'
+                    : 'text-gray-400 hover:text-white'
+                    }`}
                 >
                   {section}
                 </button>
               ))}
+              <button
+                onClick={() => handleMobileNavClick('contact')}
+                className="px-6 py-3 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 text-lg font-medium flex items-center gap-2 transition-all justify-center w-full max-w-xs mx-auto"
+              >
+                Start a Conversation
+              </button>
               <a
                 href={`/Resume.pdf?t=${Date.now()}`}
                 target="_blank"
@@ -513,10 +542,9 @@ function Portfolio() {
                   setMobileMenuOpen(false);
                   trackEvent('resume_viewed', { event_category: 'Resume', event_label: 'Mobile Nav' });
                 }}
-                className="px-6 py-3 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 text-lg font-medium flex items-center gap-2"
+                className="px-6 py-3 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 text-lg font-medium flex items-center gap-2 transition-all justify-center w-full max-w-xs mx-auto"
               >
-                <FileText className="w-5 h-5" />
-                Resume
+                Get My Resume
               </a>
             </div>
           </div>
@@ -534,7 +562,13 @@ function Portfolio() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-              I build scalable machine learning and artificial intelligence systems with automated MLOps pipelines and cloud-native deployment strategies.
+              <span className="font-bold">
+                I architect Generative and Agentic AI systems
+              </span>
+              <br />
+              <span className="text-lg md:text-xl mt-4 inline-block text-gray-400">
+                • LLM Fine-Tuning • Advanced RAG • Scalable Cloud MLOps
+              </span>
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Button
@@ -542,33 +576,106 @@ function Portfolio() {
                   trackEvent('cta_click', { event_category: 'Hero', event_label: 'View My Work' });
                   scrollToSection('projects');
                 }}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-purple-500/50 transition-all"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-purple-500/50 transition-all font-bold tracking-wide"
                 data-testid="view-work-button"
               >
-                View My Work
+                Try Live Demos
               </Button>
               <Button
                 onClick={() => {
                   trackEvent('cta_click', { event_category: 'Hero', event_label: 'Get In Touch' });
                   scrollToSection('contact');
                 }}
-                variant="outline"
-                className="border-2 border-white/20 bg-white/5 hover:bg-white/10 text-white px-8 py-6 text-lg rounded-lg backdrop-blur-sm"
+                className="relative overflow-hidden group border-2 border-pink-500/50 bg-pink-500/10 hover:bg-pink-500/30 text-white px-8 py-6 text-lg rounded-lg backdrop-blur-sm transition-all shadow-[0_0_15px_rgba(236,72,153,0.4)] hover:shadow-[0_0_25px_rgba(236,72,153,0.7)] hover:-translate-y-1"
                 data-testid="contact-button"
               >
-                Get In Touch
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-purple-500/30 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <span className="relative z-10 font-bold tracking-wide">Let's Build Together</span>
               </Button>
             </div>
           </div>
         </div>
 
-        <button 
+        <button
           onClick={() => scrollToSection('skills')}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer z-10"
           data-testid="scroll-indicator"
         >
           <ChevronDown className="w-8 h-8 text-pink-400" />
         </button>
+      </section>
+
+      {/* Projects Section */}
+      <section id="projects" className="relative py-24 px-6" data-testid="projects-section">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 scroll-reveal">
+            <p className="text-pink-400 text-sm uppercase tracking-widest mb-4 font-semibold">My Work</p>
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">Featured Projects</h2>
+
+            {/* Running text alert */}
+            <div className="overflow-hidden w-full max-w-4xl mx-auto bg-pink-500/10 border border-pink-500/30 py-3 rounded-lg mb-8 relative flex">
+              <div className="animate-marquee text-pink-300 font-medium text-lg tracking-wide shrink-0 min-w-full flex justify-center">
+                <span className="pr-16">🚀 Note: The projects section is currently being updated. I will be adding new projects and case studies very shortly! Stay tuned.</span>
+              </div>
+              <div className="animate-marquee text-pink-300 font-medium text-lg tracking-wide shrink-0 min-w-full flex justify-center" aria-hidden="true">
+                <span className="pr-16">🚀 Note: The projects section is currently being updated. I will be adding new projects and case studies very shortly! Stay tuned.</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+            {projects.map((project, index) => (
+              <Card
+                key={project.id}
+                onClick={() => {
+                  trackEvent('project_card_clicked', {
+                    event_category: 'Projects',
+                    project_name: project.title,
+                    project_slug: project.slug,
+                  });
+                  navigate(`/project/${project.slug}`);
+                }}
+                className="scroll-reveal bg-gradient-to-br from-zinc-900/90 to-zinc-800/90 backdrop-blur-sm border border-purple-500/30 p-8 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
+                style={{ animationDelay: `${index * 150}ms` }}
+                data-testid={`project-card-${project.id}`}
+              >
+                <div className="text-6xl font-bold text-purple-500/20 mb-4">0{project.id}</div>
+                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3">
+                  {project.cardTagline || project.tagline}
+                </p>
+
+                <div className="mb-4">
+                  {project.highlights.slice(0, 2).map((highlight, i) => (
+                    <div key={i} className="flex items-center gap-2 text-sm text-pink-300 mb-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-pink-400" />
+                      {highlight}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {project.tech.slice(0, 4).map((tech, i) => (
+                    <Badge key={i} className="bg-blue-500/10 text-blue-300 border-blue-500/30">
+                      {tech}
+                    </Badge>
+                  ))}
+                  {project.tech.length > 4 && (
+                    <Badge className="bg-blue-500/10 text-blue-300 border-blue-500/30">
+                      +{project.tech.length - 4} more
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="text-purple-400 text-sm font-medium flex items-center gap-2">
+                  View Details <ExternalLink className="w-4 h-4" />
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Skills Section */}
@@ -602,69 +709,6 @@ function Portfolio() {
                       {item}
                     </Badge>
                   ))}
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Projects Section */}
-      <section id="projects" className="relative py-24 px-6" data-testid="projects-section">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 scroll-reveal">
-            <p className="text-pink-400 text-sm uppercase tracking-widest mb-4 font-semibold">My Work</p>
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">Featured Projects</h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-            {projects.map((project, index) => (
-              <Card
-                key={project.id}
-                onClick={() => {
-                  trackEvent('project_card_clicked', {
-                    event_category: 'Projects',
-                    project_name: project.title,
-                    project_slug: project.slug,
-                  });
-                  navigate(`/project/${project.slug}`);
-                }}
-                className="scroll-reveal bg-gradient-to-br from-zinc-900/90 to-zinc-800/90 backdrop-blur-sm border border-purple-500/30 p-8 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
-                style={{ animationDelay: `${index * 150}ms` }}
-                data-testid={`project-card-${project.id}`}
-              >
-                <div className="text-6xl font-bold text-purple-500/20 mb-4">0{project.id}</div>
-                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3">
-                  {project.description.split('\n\n')[0]}
-                </p>
-                
-                <div className="mb-4">
-                  {project.highlights.slice(0, 2).map((highlight, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-pink-300 mb-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-pink-400" />
-                      {highlight}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tech.slice(0, 4).map((tech, i) => (
-                    <Badge key={i} className="bg-blue-500/10 text-blue-300 border-blue-500/30">
-                      {tech}
-                    </Badge>
-                  ))}
-                  {project.tech.length > 4 && (
-                    <Badge className="bg-blue-500/10 text-blue-300 border-blue-500/30">
-                      +{project.tech.length - 4} more
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="text-purple-400 text-sm font-medium flex items-center gap-2">
-                  View Details <ExternalLink className="w-4 h-4" />
                 </div>
               </Card>
             ))}
@@ -746,24 +790,6 @@ function Portfolio() {
                 </div>
               </Card>
 
-              <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all" data-testid="contact-phone">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-lg bg-pink-500/10">
-                    <Phone className="w-6 h-6 text-pink-400" />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Phone</p>
-                    <a
-                      href="tel:+917534090544"
-                      onClick={() => trackEvent('social_link_clicked', { event_category: 'Contact', event_label: 'Phone' })}
-                      className="text-white hover:text-pink-400 transition-colors"
-                    >
-                      +91 7534090544
-                    </a>
-                  </div>
-                </div>
-              </Card>
-
               <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all" data-testid="contact-location">
                 <div className="flex items-center gap-4">
                   <div className="p-3 rounded-lg bg-blue-500/10">
@@ -783,9 +809,9 @@ function Portfolio() {
                   </div>
                   <div>
                     <p className="text-gray-400 text-sm">LinkedIn</p>
-                    <a 
-                      href="https://www.linkedin.com/in/aryangupta7263" 
-                      target="_blank" 
+                    <a
+                      href="https://www.linkedin.com/in/aryangupta7263"
+                      target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => trackEvent('social_link_clicked', { event_category: 'Contact', event_label: 'LinkedIn' })}
                       className="text-white hover:text-purple-400 transition-colors"
@@ -832,19 +858,19 @@ function Portfolio() {
                 <Button
                   type="submit"
                   disabled={formStatus === 'sending'}
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 rounded-lg shadow-lg hover:shadow-purple-500/50 transition-all flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 rounded-lg shadow-lg hover:shadow-purple-500/50 transition-all flex items-center justify-center gap-2 font-bold tracking-wide"
                   data-testid="form-submit"
                 >
                   {formStatus === 'sending' ? (
                     'Sending...'
                   ) : formStatus === 'success' ? (
-                    '✓ Message Sent!'
+                    'Inquiry Received. Thanks for reaching out.'
                   ) : formStatus === 'error' ? (
                     '❌ Sending Failed'
                   ) : (
                     <>
                       <Send className="w-4 h-4" />
-                      Send Message
+                      Deploy Inquiry
                     </>
                   )}
                 </Button>
@@ -870,6 +896,7 @@ function ProjectDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const project = projectsData[slug];
+  const [showArchModal, setShowArchModal] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -924,7 +951,7 @@ function ProjectDetail() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-purple-500/20">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button 
+          <button
             onClick={() => navigate('/')}
             className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform"
           >
@@ -941,7 +968,7 @@ function ProjectDetail() {
       </nav>
 
       {/* Project Hero */}
-      <section className="relative pt-32 pb-16 px-6">
+      <section className="relative pt-32 pb-8 px-6">
         <div className="max-w-5xl mx-auto text-center z-10 relative">
           <div className="mb-6 flex items-center justify-center gap-4 flex-wrap">
             <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/50 px-4 py-1">
@@ -957,9 +984,9 @@ function ProjectDetail() {
           <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
             {project.tagline}
           </p>
-          
-          {/* GitHub and Live Demo Buttons */}
-          <div className="flex items-center justify-center gap-6 flex-wrap mb-4">
+
+          {/* GitHub, Live Demo and Architecture Buttons */}
+          <div className="flex items-center justify-center gap-4 flex-wrap mb-4">
             <a
               href={project.github}
               target="_blank"
@@ -970,10 +997,10 @@ function ProjectDetail() {
                 project_slug: project.slug,
                 event_label: 'View Code',
               })}
-              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-purple-500/50 hover:scale-105"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-base rounded-lg font-semibold transition-all shadow-lg hover:shadow-purple-500/50 hover:scale-105"
               data-testid="project-github-button"
             >
-              <Github className="w-6 h-6" />
+              <Github className="w-5 h-5" />
               View Code
             </a>
             <a
@@ -986,18 +1013,34 @@ function ProjectDetail() {
                 project_slug: project.slug,
                 event_label: 'Live Demo',
               })}
-              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-pink-500/50 hover:scale-105"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-base rounded-lg font-semibold transition-all shadow-lg hover:shadow-pink-500/50 hover:scale-105"
               data-testid="project-demo-button"
             >
-              <ExternalLink className="w-6 h-6" />
+              <ExternalLink className="w-5 h-5" />
               Live Demo
             </a>
+            <button
+              onClick={() => {
+                trackEvent('project_architecture_clicked', {
+                  event_category: 'Projects',
+                  project_name: project.title,
+                  project_slug: project.slug,
+                  event_label: 'Architecture',
+                });
+                setShowArchModal(true);
+              }}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-base rounded-lg font-semibold transition-all shadow-lg hover:shadow-purple-500/50 hover:scale-105"
+              data-testid="project-architecture-button"
+            >
+              <Layers className="w-5 h-5" />
+              Architecture
+            </button>
           </div>
         </div>
       </section>
 
       {/* Project Content */}
-      <section className="relative py-16 px-6">
+      <section className="relative pt-8 pb-16 px-6">
         <div className="max-w-5xl mx-auto z-10 relative">
           {/* Description */}
           <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8 mb-8">
@@ -1033,6 +1076,17 @@ function ProjectDetail() {
               ))}
             </div>
           </Card>
+
+          {/* Back to Portfolio Button */}
+          <div className="mt-12 flex justify-center">
+            <button
+              onClick={handleBackClick}
+              className="flex items-center gap-2 px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white border border-purple-500/30 rounded-lg transition-all shadow-lg hover:shadow-purple-500/50"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              Back to Portfolio
+            </button>
+          </div>
         </div>
       </section>
 
@@ -1042,6 +1096,41 @@ function ProjectDetail() {
           <p className="text-gray-500">© 2025 Aryan Gupta. Built with React & Tailwind CSS.</p>
         </div>
       </footer>
+
+      {/* Architecture Modal */}
+      {showArchModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+          onClick={() => setShowArchModal(false)}
+        >
+          <div
+            className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center animate-in zoom-in-95 duration-200"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              className="absolute -top-12 right-0 text-white/70 hover:text-white transition-colors"
+              onClick={() => setShowArchModal(false)}
+            >
+              <X className="w-8 h-8" />
+            </button>
+            <div className="bg-zinc-900 border border-purple-500/30 rounded-xl p-2 w-full h-full overflow-hidden shadow-2xl shadow-purple-500/20">
+              {project.architecture ? (
+                <img
+                  src={project.architecture}
+                  alt={`${project.title} Architecture`}
+                  className="w-full h-full object-contain max-h-[85vh] rounded-lg"
+                />
+              ) : (
+                <div className="w-full h-64 md:h-96 flex flex-col items-center justify-center text-gray-400">
+                  <Layers className="w-16 h-16 mb-4 text-purple-500/50" />
+                  <p className="text-xl font-semibold text-white">Architecture Diagram</p>
+                  <p className="text-sm mt-2 text-center max-w-sm">Detailed architecture layout for this project will be added soon.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
