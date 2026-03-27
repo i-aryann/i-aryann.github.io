@@ -346,34 +346,34 @@ function Portfolio() {
 
   const skills = [
     {
-      category: 'Languages',
+      category: 'Programming',
       icon: <Code2 className="w-8 h-8" />,
-      items: ['Python', 'SQL', 'JavaScript']
+      items: ['Python', 'SQL']
     },
     {
-      category: 'AI & Machine Learning',
-      icon: <Brain className="w-8 h-8" />,
-      items: ['TensorFlow', 'PyTorch', 'Scikit-Learn', 'XGBoost', 'Random Forest', 'K-Means']
-    },
-    {
-      category: 'Deep Learning & NLP',
+      category: 'LLM & AI',
       icon: <Sparkles className="w-8 h-8" />,
-      items: ['Transformers', 'BERT', 'LSTMs', 'Hugging Face', 'Keras']
+      items: ['OpenAI & Open-source APIs', 'LangChain', 'LangGraph', 'AI Agents', 'Hugging Face']
     },
     {
-      category: 'MLOps & Cloud',
+      category: 'Databases & Vector DB',
+      icon: <Database className="w-8 h-8" />,
+      items: ['Qdrant', 'FAISS', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis']
+    },
+    {
+      category: 'Frameworks & APIs',
+      icon: <Layers className="w-8 h-8" />,
+      items: ['FastAPI', 'Flask', 'Pydantic', 'langsmith', 'NumPy', 'Pandas']
+    },
+    {
+      category: 'Cloud & DevOps',
       icon: <Cloud className="w-8 h-8" />,
-      items: ['AWS SageMaker', 'AWS EC2', 'AWS S3', 'AWS Lambda', 'Docker', 'CI/CD Pipelines']
+      items: ['AWS Cloud (EC2, S3, Lambda, SageMaker etc)', 'Docker', 'GitHub Actions', 'CI/CD pipelines']
     },
     {
-      category: 'Data & Analytics',
-      icon: <Database className="w-8 h-8" />,
-      items: ['Pandas', 'NumPy', 'Power BI', 'Matplotlib', 'Seaborn', 'Plotly']
-    },
-    {
-      category: 'Databases',
-      icon: <Database className="w-8 h-8" />,
-      items: ['PostgreSQL', 'MySQL', 'MongoDB']
+      category: 'Machine Learning & NLP',
+      icon: <Brain className="w-8 h-8" />,
+      items: ['Classical ML (supervised and unsupervised)', 'Scikit-learn', 'TensorFlow', 'Transformers', 'BERT']
     }
   ];
 
@@ -612,18 +612,9 @@ function Portfolio() {
             <p className="text-pink-400 text-sm uppercase tracking-widest mb-4 font-semibold">My Work</p>
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">Featured Projects</h2>
 
-            {/* Running text alert */}
-            <div className="overflow-hidden w-full max-w-4xl mx-auto bg-pink-500/10 border border-pink-500/30 py-3 rounded-lg mb-8 relative flex">
-              <div className="animate-marquee text-pink-300 font-medium text-lg tracking-wide shrink-0 min-w-full flex justify-center">
-                <span className="pr-16">🚀 Note: The projects section is currently being updated. I will be adding new projects and case studies very shortly! Stay tuned.</span>
-              </div>
-              <div className="animate-marquee text-pink-300 font-medium text-lg tracking-wide shrink-0 min-w-full flex justify-center" aria-hidden="true">
-                <span className="pr-16">🚀 Note: The projects section is currently being updated. I will be adding new projects and case studies very shortly! Stay tuned.</span>
-              </div>
-            </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8" style={{ gridTemplateRows: 'auto' }}>
             {projects.map((project, index) => (
               <Card
                 key={project.id}
@@ -635,7 +626,7 @@ function Portfolio() {
                   });
                   navigate(`/project/${project.slug}`);
                 }}
-                className="scroll-reveal bg-gradient-to-br from-zinc-900/90 to-zinc-800/90 backdrop-blur-sm border border-purple-500/30 p-8 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
+                className="scroll-reveal bg-gradient-to-br from-zinc-900/90 to-zinc-800/90 backdrop-blur-sm border border-purple-500/30 p-8 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-500 hover:-translate-y-2 group cursor-pointer grid grid-rows-[auto_auto_1fr_auto_auto_auto] h-full"
                 style={{ animationDelay: `${index * 150}ms` }}
                 data-testid={`project-card-${project.id}`}
               >
@@ -643,20 +634,20 @@ function Portfolio() {
                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3">
+                <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3 self-start">
                   {project.cardTagline || project.tagline}
                 </p>
 
-                <div className="mb-4">
+                <div className="mb-4 self-end">
                   {project.highlights.slice(0, 2).map((highlight, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm text-pink-300 mb-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-pink-400" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-pink-400 shrink-0" />
                       {highlight}
                     </div>
                   ))}
                 </div>
 
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-6 self-end content-end">
                   {project.tech.slice(0, 4).map((tech, i) => (
                     <Badge key={i} className="bg-blue-500/10 text-blue-300 border-blue-500/30">
                       {tech}
@@ -669,7 +660,7 @@ function Portfolio() {
                   )}
                 </div>
 
-                <div className="text-purple-400 text-sm font-medium flex items-center gap-2">
+                <div className="text-purple-400 text-sm font-medium flex items-center gap-2 self-end">
                   View Details <ExternalLink className="w-4 h-4" />
                 </div>
               </Card>
