@@ -5,6 +5,9 @@
 User-agent: *
 Allow: /
 
+# ─── Allow important files ───────────────────────────────────────────────
+Allow: /Resume.pdf
+
 # ─── Block build artifacts from being indexed ───────────────────────────────
 Disallow: /src/
 Disallow: /node_modules/
@@ -12,7 +15,7 @@ Disallow: /*.map$
 
 # ─── Crawl-rate hints ───────────────────────────────────────────────────────
 User-agent: Googlebot
-Crawl-delay: 1
+Allow: /
 
 User-agent: Bingbot
 Crawl-delay: 2
