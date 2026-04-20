@@ -423,6 +423,7 @@ function Portfolio() {
 
   return (
     <div className="App">
+      <main role="main">
       {/* Animated Background */}
       <div className="fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-black" />
@@ -772,6 +773,7 @@ function Portfolio() {
                     <p className="text-gray-400 text-sm">Email</p>
                     <a
                       href="mailto:aryangupta.7263@gmail.com"
+                      rel="me"
                       onClick={() => trackEvent('social_link_clicked', { event_category: 'Contact', event_label: 'Email' })}
                       className="text-white hover:text-purple-400 transition-colors"
                     >
@@ -803,7 +805,7 @@ function Portfolio() {
                     <a
                       href="https://www.linkedin.com/in/aryangupta7263"
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noopener noreferrer me"
                       onClick={() => trackEvent('social_link_clicked', { event_category: 'Contact', event_label: 'LinkedIn' })}
                       className="text-white hover:text-purple-400 transition-colors"
                     >
@@ -871,11 +873,12 @@ function Portfolio() {
         </div>
       </section>
 
+      </main>
       {/* Footer */}
-      <footer className="relative py-8 px-6 border-t border-white/5" data-testid="footer">
+      <footer className="relative py-8 px-6 border-t border-white/5 contentinfo" data-testid="footer">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-gray-500">
-            © 2025 Aryan Gupta. Built with React & Tailwind CSS.
+            © 2026 Aryan Gupta. Built with React & Tailwind CSS.
           </p>
         </div>
       </footer>
@@ -894,9 +897,48 @@ function ProjectDetail() {
     if (project) {
       updateSEO({
         title: `${project.title} | Aryan Gupta – AI Engineer`,
-        description: `${project.tagline}. Built with ${project.tech.slice(0, 5).join(', ')}. ${project.description.split('\n\n')[0].slice(0, 120)}...`,
+        description: `${project.tagline}. Built with ${project.tech.slice(0, 5).join(', ')}. ${project.description.split('\\n\\n')[0].slice(0, 120)}...`,
         canonical: `https://aryangupta.work/project/${project.slug}`,
       });
+      
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.id = 'project-jsonld';
+      script.innerHTML = JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "SoftwareApplication",
+            "name": project.title,
+            "url": `https://aryangupta.work/project/${project.slug}`,
+            "description": project.tagline,
+            "applicationCategory": project.category,
+            "operatingSystem": "Web",
+            "author": {
+              "@type": "Person",
+              "name": "Aryan Gupta",
+              "url": "https://aryangupta.work/"
+            },
+            "programmingLanguage": project.tech
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://aryangupta.work/" },
+              { "@type": "ListItem", "position": 2, "name": "Projects", "item": "https://aryangupta.work/#projects" },
+              { "@type": "ListItem", "position": 3, "name": project.title, "item": `https://aryangupta.work/project/${project.slug}` }
+            ]
+          }
+        ]
+      });
+      document.head.appendChild(script);
+      
+      return () => {
+        const existingScript = document.head.querySelector('#project-jsonld');
+        if (existingScript) {
+          document.head.removeChild(existingScript);
+        }
+      };
     }
   }, [project]);
 
@@ -931,6 +973,7 @@ function ProjectDetail() {
 
   return (
     <div className="App min-h-screen">
+      <main role="main">
       {/* Background */}
       <div className="fixed inset-0 z-0 overflow-hidden">
         <div className="absolute inset-0 bg-black" />
@@ -1081,10 +1124,11 @@ function ProjectDetail() {
         </div>
       </section>
 
+      </main>
       {/* Footer */}
-      <footer className="relative py-8 px-6 border-t border-white/5 mt-16">
+      <footer className="relative py-8 px-6 border-t border-white/5 mt-16 contentinfo">
         <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-500">© 2025 Aryan Gupta. Built with React & Tailwind CSS.</p>
+          <p className="text-gray-500">© 2026 Aryan Gupta. Built with React & Tailwind CSS.</p>
         </div>
       </footer>
 
