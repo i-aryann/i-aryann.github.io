@@ -379,37 +379,38 @@ function Portfolio() {
       location: 'New Delhi',
       icon: <Briefcase className="w-5 h-5" />,
       highlights: [
-        'Engineered SQL-backed dashboards to audit 100K+ CRM records, achieving 4.5% YoY performance increase',
-        'Automated data pipelines using Python and SQL, reducing manual reporting time by 30%',
-        'Developed data-driven optimization heuristics, driving 89% adherence to TAT across teams'
+        'Built and deployed a RAG-based support assistant for IT support workflows (LLMs + vector search); improved documentation retrieval and reduced manual lookup by 35–45%',
+        'Reduced ticket resolution time by 14–16% by enabling real-time, context-aware retrieval using hybrid search and re-ranking for precise query-to-context matching',
+        'Boosted resolution efficiency by 4.5% YoY by engineering SQL-based performance models to analyze 60K+ historical CRM records and identify bottleneck trends.',
+        'Improved SLA compliance to 93% by performing exploratory data analysis (EDA) on high-volume JIRA datasets and implementing statistical prioritization models to resolve friction points'
       ]
     },
     {
-      period: '2022 - 2023',
-      role: 'Data Science Specialization',
+      period: 'Sep 2022 - March 2024',
+      role: 'Certification in Data Science and Machine Learning',
       company: 'Scaler',
-      location: 'Bangalore',
+      location: 'Bengaluru',
       icon: <Award className="w-5 h-5" />,
       highlights: []
     },
     {
-      period: '2021 - 2022',
+      period: 'Aug 2021 - Jan 2022',
       role: 'Research Engineer',
       company: 'VIVO Mobiles India Limited',
-      location: 'Noida',
+      location: 'Delhi NCR',
       icon: <Briefcase className="w-5 h-5" />,
       highlights: [
-        'Led a 15-member team with KPI-driven dashboards, resulting in 4% productivity increase',
-        'Created data visualization dashboards enabling real-time decision making'
+        'Increased operational output by 4% through the design and standardization of quantitative KPI metrics derived from historical performance trends.',
+        'Accelerated executive decision-making for 20+ senior stakeholders by developing dynamic Excel dashboards utilizing advanced lookups, pivot tables, and slicers.'
       ]
     },
     {
-      period: '2018 - 2022',
-      role: 'Bachelor of Technology',
+      period: 'July 2018 - July 2022',
+      role: 'Bachelor of Technology in Electronics and Communication Engineering',
       company: 'Dr. A.P.J. Abdul Kalam Technical University',
-      location: 'India',
+      location: 'Lucknow, U.P.',
       icon: <GraduationCap className="w-5 h-5" />,
-      highlights: ['Specialization in Electronics and Communication Engineering']
+      highlights: []
     }
   ];
 
@@ -434,7 +435,7 @@ function Portfolio() {
               className="text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity"
               data-testid="logo-button"
             >
-              ARYAN<span className="text-gray-400 font-light">.ai</span>
+              AI Engineer <span className="text-gray-400 font-light">Portfolio</span>
             </button>
 
             {/* Desktop center links */}
@@ -628,7 +629,7 @@ function Portfolio() {
                   className="scroll-reveal card-hover bg-white border border-gray-200 rounded-2xl p-8 cursor-pointer flex flex-col shadow-sm"
                   data-testid={`project-card-${project.id}`}
                 >
-                  <div className="text-7xl font-bold text-gray-200 mb-4 leading-none select-none">
+                  <div className="text-7xl font-bold text-[#FF6600] mb-4 leading-none select-none">
                     0{project.id}
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-3">{project.title}</h3>
@@ -684,7 +685,7 @@ function Portfolio() {
                   className="scroll-reveal bg-white border border-gray-200 rounded-2xl p-8 text-left shadow-sm hover:shadow-md transition-all flex flex-col items-start"
                   data-testid={`skill-card-${index}`}
                 >
-                  <div className="text-gray-800 mb-5">{skill.icon}</div>
+                  <div className="text-[#FF6600] mb-5">{skill.icon}</div>
                   <h3 className="text-xl font-bold text-gray-900 mb-4">{skill.category}</h3>
                   <div className="flex flex-wrap gap-2.5">
                     {skill.items.map((item, i) => (
@@ -725,7 +726,9 @@ function Portfolio() {
                   <div>
                     <p className="text-gray-400 text-sm mb-1">{exp.period}</p>
                     <h3 className="text-lg font-bold text-gray-900 mb-0.5">{exp.role}</h3>
-                    <p className="text-gray-500 mb-3">{exp.company} • {exp.location}</p>
+                    <p className="text-gray-500 mb-3">
+                      <span className="text-[#FF6600] font-medium">{exp.company}</span> • {exp.location}
+                    </p>
                     {exp.highlights.length > 0 && (
                       <ul className="space-y-1.5">
                         {exp.highlights.map((highlight, i) => (
@@ -756,7 +759,7 @@ function Portfolio() {
                 <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all" data-testid="contact-email">
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-xl bg-gray-100">
-                      <Mail className="w-5 h-5 text-gray-600" />
+                      <Mail className="w-5 h-5 text-[#FF6600]" />
                     </div>
                     <div>
                       <p className="text-gray-400 text-xs uppercase tracking-wide mb-0.5">Email</p>
@@ -775,7 +778,7 @@ function Portfolio() {
                 <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all" data-testid="contact-location">
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-xl bg-gray-100">
-                      <MapPin className="w-5 h-5 text-gray-600" />
+                      <MapPin className="w-5 h-5 text-[#FF6600]" />
                     </div>
                     <div>
                       <p className="text-gray-400 text-xs uppercase tracking-wide mb-0.5">Location</p>
@@ -787,7 +790,7 @@ function Portfolio() {
                 <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all" data-testid="contact-linkedin">
                   <div className="flex items-center gap-4">
                     <div className="p-3 rounded-xl bg-gray-100">
-                      <Linkedin className="w-5 h-5 text-gray-600" />
+                      <Linkedin className="w-5 h-5 text-[#FF6600]" />
                     </div>
                     <div>
                       <p className="text-gray-400 text-xs uppercase tracking-wide mb-0.5">LinkedIn</p>
@@ -974,7 +977,7 @@ function ProjectDetail() {
               onClick={() => navigate('/')}
               className="text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity"
             >
-              ARYAN<span className="text-gray-400 font-light">.ai</span>
+              AI Engineer <span className="text-gray-400 font-light">Portfolio</span>
             </button>
             <button
               onClick={handleBackClick}
