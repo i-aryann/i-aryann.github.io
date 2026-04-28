@@ -1,15 +1,12 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState, useRef, useCallback, lazy, Suspense } from 'react';
 import '@/App.css';
 import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Github, 
-  Linkedin, 
-  Mail, 
-  MapPin, 
-  Phone, 
+import {
+  Github,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
   ExternalLink,
   Code2,
   Database,
@@ -26,7 +23,292 @@ import {
   X
 } from 'lucide-react';
 
-// Project Data with full details
+// ═══════════════════════════════════════════════════════════════
+// ANTI-GRAVITY PHYSICS ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+function useAntiGravity() {
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const rafRef = useRef(null);
+  const elementsRef = useRef([]);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY };
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  const registerElement = useCallback((el, options = {}) => {
+    if (el && !elementsRef.current.find(e => e.el === el)) {
+      elementsRef.current.push({
+        el,
+        repelStrength: options.repelStrength || 0.05,
+        maxDistance: options.maxDistance || 200,
+        currentX: 0,
+        currentY: 0,
+        targetX: 0,
+        targetY: 0,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const animate = () => {
+      elementsRef.current.forEach((item) => {
+        const rect = item.el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const dx = mouseRef.current.x - centerX;
+        const dy = mouseRef.current.y - centerY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < item.maxDistance) {
+          const force = (1 - distance / item.maxDistance) * item.repelStrength;
+          item.targetX = -dx * force;
+          item.targetY = -dy * force;
+        } else {
+          item.targetX = 0;
+          item.targetY = 0;
+        }
+
+        // Spring physics interpolation
+        item.currentX += (item.targetX - item.currentX) * 0.08;
+        item.currentY += (item.targetY - item.currentY) * 0.08;
+
+        if (Math.abs(item.currentX) > 0.01 || Math.abs(item.currentY) > 0.01) {
+          item.el.style.transform = `translate(${item.currentX}px, ${item.currentY}px)`;
+        }
+      });
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return { registerElement };
+}
+
+// ── Parallax Tilt Hook ────────────────────────────────────────
+function useTilt(ref, options = {}) {
+  const { maxTilt = 8, scale = 1.02, speed = 400 } = options;
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    let animationFrame;
+
+    const handleMouseMove = (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+
+      const tiltX = (maxTilt * (0.5 - y)).toFixed(2);
+      const tiltY = (maxTilt * (x - 0.5)).toFixed(2);
+
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        el.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(${scale}, ${scale}, ${scale})`;
+        el.style.transition = `transform ${speed}ms cubic-bezier(0.03, 0.98, 0.52, 0.99)`;
+      });
+    };
+
+    const handleMouseLeave = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        el.style.transition = `transform ${speed}ms cubic-bezier(0.03, 0.98, 0.52, 0.99)`;
+      });
+    };
+
+    el.addEventListener('mousemove', handleMouseMove, { passive: true });
+    el.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+
+    return () => {
+      el.removeEventListener('mousemove', handleMouseMove);
+      el.removeEventListener('mouseleave', handleMouseLeave);
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [ref, maxTilt, scale, speed]);
+}
+
+// ── Magnetic Button Hook ──────────────────────────────────────
+function useMagnetic(ref, strength = 0.3) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    let animationFrame;
+
+    const handleMouseMove = (e) => {
+      const rect = el.getBoundingClientRect();
+      const dx = e.clientX - (rect.left + rect.width / 2);
+      const dy = e.clientY - (rect.top + rect.height / 2);
+
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        el.style.transform = `translate(${dx * strength}px, ${dy * strength}px)`;
+        el.style.transition = 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      });
+    };
+
+    const handleMouseLeave = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        el.style.transform = 'translate(0px, 0px)';
+        el.style.transition = 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      });
+    };
+
+    el.addEventListener('mousemove', handleMouseMove, { passive: true });
+    el.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+
+    return () => {
+      el.removeEventListener('mousemove', handleMouseMove);
+      el.removeEventListener('mouseleave', handleMouseLeave);
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [ref, strength]);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PARTICLE NETWORK SYSTEM
+// ═══════════════════════════════════════════════════════════════
+
+function ParticleNetwork() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrame;
+    let particles = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const PARTICLE_COUNT = Math.min(60, Math.floor(window.innerWidth / 25));
+    const CONNECTION_DISTANCE = 150;
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: Math.random() * 1.5 + 0.5,
+        opacity: Math.random() * 0.5 + 0.2,
+      });
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(139, 92, 246, ${p.opacity})`;
+        ctx.fill();
+      });
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < CONNECTION_DISTANCE) {
+            const opacity = (1 - distance / CONNECTION_DISTANCE) * 0.15;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(139, 92, 246, ${opacity})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} id="particle-canvas" />;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TILTABLE CARD COMPONENT
+// ═══════════════════════════════════════════════════════════════
+
+function TiltCard({ children, className = '', onClick, style, ...props }) {
+  const cardRef = useRef(null);
+  useTilt(cardRef, { maxTilt: 6, scale: 1.01 });
+
+  return (
+    <div
+      ref={cardRef}
+      className={`ag-card ${className}`}
+      onClick={onClick}
+      style={{ ...style, transformStyle: 'preserve-3d' }}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAGNETIC BUTTON COMPONENT
+// ═══════════════════════════════════════════════════════════════
+
+function MagneticButton({ children, className = '', onClick, type, disabled, ...props }) {
+  const btnRef = useRef(null);
+  useMagnetic(btnRef, 0.25);
+
+  return (
+    <button
+      ref={btnRef}
+      className={className}
+      onClick={onClick}
+      type={type}
+      disabled={disabled}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROJECT DATA
+// ═══════════════════════════════════════════════════════════════
+
 const projectsData = {
   'credit-default': {
     id: 1,
@@ -115,19 +397,42 @@ const projectsData = {
   }
 };
 
-// Loading component
+// ═══════════════════════════════════════════════════════════════
+// LOADING COMPONENT
+// ═══════════════════════════════════════════════════════════════
+
 function PageLoader() {
   return (
-    <div className="fixed inset-0 bg-black flex items-center justify-center z-50">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-white text-lg">Loading...</p>
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: '#0A0A0F',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 9999
+    }}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{
+          width: 48,
+          height: 48,
+          border: '3px solid rgba(139, 92, 246, 0.2)',
+          borderTop: '3px solid #8B5CF6',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+          margin: '0 auto 16px'
+        }} />
+        <p style={{ color: '#94A3B8', fontSize: '0.9rem' }}>Loading...</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     </div>
   );
 }
 
-// Page transition wrapper
+// ═══════════════════════════════════════════════════════════════
+// PAGE TRANSITION
+// ═══════════════════════════════════════════════════════════════
+
 function PageTransition({ children }) {
   const location = useLocation();
   const [displayLocation, setDisplayLocation] = useState(location);
@@ -154,12 +459,37 @@ function PageTransition({ children }) {
   );
 }
 
+// ═══════════════════════════════════════════════════════════════
+// ANIMATED BACKGROUND
+// ═══════════════════════════════════════════════════════════════
+
+function AnimatedBackground() {
+  return (
+    <>
+      <div className="ag-bg-base" />
+      <div className="ag-orb ag-orb-1" />
+      <div className="ag-orb ag-orb-2" />
+      <div className="ag-orb ag-orb-3" />
+      <div className="ag-orb ag-orb-4" />
+      <ParticleNetwork />
+      <div className="grid-overlay" />
+    </>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN PORTFOLIO COMPONENT
+// ═══════════════════════════════════════════════════════════════
+
 function Portfolio() {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [formStatus, setFormStatus] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const ctaRef = useRef(null);
+
+  useMagnetic(ctaRef, 0.15);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -177,7 +507,7 @@ function Portfolio() {
       if (current) setActiveSection(current);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -198,7 +528,6 @@ function Portfolio() {
     return () => observer.disconnect();
   }, []);
 
-  // Close mobile menu on section click
   const handleMobileNavClick = (sectionId) => {
     setMobileMenuOpen(false);
     scrollToSection(sectionId);
@@ -221,7 +550,7 @@ function Portfolio() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setFormStatus('sending');
-    
+
     setTimeout(() => {
       setFormStatus('success');
       e.target.reset();
@@ -232,32 +561,32 @@ function Portfolio() {
   const skills = [
     {
       category: 'Languages',
-      icon: <Code2 className="w-8 h-8" />,
+      icon: <Code2 className="w-7 h-7" />,
       items: ['Python', 'SQL', 'JavaScript']
     },
     {
       category: 'AI & Machine Learning',
-      icon: <Brain className="w-8 h-8" />,
+      icon: <Brain className="w-7 h-7" />,
       items: ['TensorFlow', 'PyTorch', 'Scikit-Learn', 'XGBoost', 'Random Forest', 'K-Means']
     },
     {
       category: 'Deep Learning & NLP',
-      icon: <Sparkles className="w-8 h-8" />,
+      icon: <Sparkles className="w-7 h-7" />,
       items: ['Transformers', 'BERT', 'LSTMs', 'Hugging Face', 'Keras']
     },
     {
       category: 'MLOps & Cloud',
-      icon: <Cloud className="w-8 h-8" />,
+      icon: <Cloud className="w-7 h-7" />,
       items: ['AWS SageMaker', 'AWS EC2', 'AWS S3', 'AWS Lambda', 'Docker', 'CI/CD Pipelines']
     },
     {
       category: 'Data & Analytics',
-      icon: <Database className="w-8 h-8" />,
+      icon: <Database className="w-7 h-7" />,
       items: ['Pandas', 'NumPy', 'Power BI', 'Matplotlib', 'Seaborn', 'Plotly']
     },
     {
       category: 'Databases',
-      icon: <Database className="w-8 h-8" />,
+      icon: <Database className="w-7 h-7" />,
       items: ['PostgreSQL', 'MySQL', 'MongoDB']
     }
   ];
@@ -306,44 +635,61 @@ function Portfolio() {
     }
   ];
 
+  const navItems = ['home', 'skills', 'projects', 'experience', 'contact'];
+
   return (
     <div className="App">
-      {/* Animated Background */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-black" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse-slower" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse-slowest" />
-        <div className="grid-overlay" />
-      </div>
+      <AnimatedBackground />
 
-      {/* Sticky Navigation */}
-      <nav 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? 'bg-black/80 backdrop-blur-lg border-b border-purple-500/20 shadow-lg shadow-purple-500/5' : 'bg-transparent'
-        }`}
+      {/* ── Navigation ──────────────────────────────────────── */}
+      <nav
+        className={`ag-nav ${isScrolled ? 'ag-nav-scrolled' : ''}`}
         data-testid="main-navigation"
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button 
+        <div style={{
+          maxWidth: 1280,
+          margin: '0 auto',
+          padding: '16px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <button
             onClick={() => navigate('/')}
-            className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '1.6rem',
+              fontWeight: 800,
+              letterSpacing: '-0.02em'
+            }}
+            className="ag-gradient-text"
             data-testid="logo-button"
           >
-            ARYAN<span className="text-white/50 font-light">.ai</span>
+            ARYAN<span style={{
+              WebkitTextFillColor: 'rgba(148, 163, 184, 0.5)',
+              fontWeight: 300
+            }}>.ai</span>
           </button>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            {['home', 'skills', 'projects', 'experience', 'contact'].map((section) => (
+          <div className="hidden md:flex" style={{ alignItems: 'center', gap: 32 }}>
+            {navItems.map((section) => (
               <button
                 key={section}
                 onClick={() => { navigate('/'); setTimeout(() => scrollToSection(section), 100); }}
-                className={`capitalize text-sm font-medium transition-all ${
-                  activeSection === section
-                    ? 'text-pink-400'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                className={`ag-link ${activeSection === section ? 'ag-link-active' : ''}`}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textTransform: 'capitalize',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  padding: '4px 0',
+                  fontFamily: 'inherit'
+                }}
                 data-testid={`nav-${section}`}
               >
                 {section}
@@ -351,7 +697,32 @@ function Portfolio() {
             ))}
             <a
               href="#resume"
-              className="px-4 py-2 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-all text-sm font-medium flex items-center gap-2"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 20px',
+                borderRadius: 10,
+                border: '1px solid rgba(139, 92, 246, 0.3)',
+                background: 'rgba(139, 92, 246, 0.08)',
+                color: '#A78BFA',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+                transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = 'rgba(139, 92, 246, 0.15)';
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.5)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 20px rgba(139, 92, 246, 0.2)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = 'rgba(139, 92, 246, 0.08)';
+                e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
               data-testid="resume-button"
             >
               <FileText className="w-4 h-4" />
@@ -360,19 +731,27 @@ function Portfolio() {
           </div>
 
           {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden text-white z-50" 
+          <button
+            className="md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: 'white',
+              zIndex: 50,
+              padding: 8
+            }}
             data-testid="mobile-menu-button"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
               <X className="w-6 h-6" />
             ) : (
-              <div className="space-y-1.5">
-                <div className="w-6 h-0.5 bg-white" />
-                <div className="w-6 h-0.5 bg-white" />
-                <div className="w-6 h-0.5 bg-white" />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                <div style={{ width: 22, height: 2, background: 'white', borderRadius: 1 }} />
+                <div style={{ width: 22, height: 2, background: 'white', borderRadius: 1 }} />
+                <div style={{ width: 16, height: 2, background: 'white', borderRadius: 1 }} />
               </div>
             )}
           </button>
@@ -380,322 +759,371 @@ function Portfolio() {
 
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 top-16 bg-black/95 backdrop-blur-lg z-40 mobile-menu-slide">
-            <div className="flex flex-col items-center justify-center h-full gap-8 px-6">
-              {['home', 'skills', 'projects', 'experience', 'contact'].map((section) => (
-                <button
-                  key={section}
-                  onClick={() => handleMobileNavClick(section)}
-                  className={`capitalize text-2xl font-medium transition-all ${
-                    activeSection === section
-                      ? 'text-pink-400'
-                      : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  {section}
-                </button>
-              ))}
-              <a
-                href="#resume"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-6 py-3 rounded-lg border border-purple-500/50 bg-purple-500/10 text-purple-400 text-lg font-medium flex items-center gap-2"
+          <div className="md:hidden mobile-menu-slide" style={{
+            position: 'fixed',
+            inset: 0,
+            top: 64,
+            background: 'rgba(10, 10, 15, 0.97)',
+            backdropFilter: 'blur(30px)',
+            zIndex: 40,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 32,
+            padding: 24
+          }}>
+            {navItems.map((section) => (
+              <button
+                key={section}
+                onClick={() => handleMobileNavClick(section)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  textTransform: 'capitalize',
+                  fontSize: '1.8rem',
+                  fontWeight: 600,
+                  color: activeSection === section ? '#06B6D4' : '#94A3B8',
+                  transition: 'color 0.3s ease',
+                  fontFamily: 'inherit'
+                }}
               >
-                <FileText className="w-5 h-5" />
-                Resume
-              </a>
-            </div>
+                {section}
+              </button>
+            ))}
+            <a
+              href="#resume"
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '12px 28px',
+                borderRadius: 12,
+                border: '1px solid rgba(139, 92, 246, 0.3)',
+                background: 'rgba(139, 92, 246, 0.08)',
+                color: '#A78BFA',
+                fontSize: '1.1rem',
+                fontWeight: 600,
+                textDecoration: 'none'
+              }}
+            >
+              <FileText className="w-5 h-5" />
+              Resume
+            </a>
           </div>
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center px-6" data-testid="hero-section">
-        <div className="max-w-5xl mx-auto text-center z-10">
+      {/* ── Hero Section ────────────────────────────────────── */}
+      <section id="home" style={{
+        position: 'relative',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '0 24px'
+      }} data-testid="hero-section">
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center', zIndex: 10, position: 'relative' }}>
           <div className="scroll-reveal">
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight">
-              <span className="text-white">Hi, I'm </span>
-              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent animate-gradient">
-                Aryan
-              </span>
+            <h1 className="ag-hero-title">
+              <span style={{ color: 'white' }}>Hi, I'm </span>
+              <span className="ag-gradient-text">Aryan</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className="ag-hero-subtitle">
               I build scalable machine learning and artificial intelligence systems with automated MLOps pipelines and cloud-native deployment strategies.
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Button
+            <div className="ag-cta-glow" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+              <MagneticButton
                 onClick={() => scrollToSection('projects')}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-6 text-lg rounded-lg shadow-lg hover:shadow-purple-500/50 transition-all"
+                className="ag-btn-magnetic ag-btn-primary"
                 data-testid="view-work-button"
               >
                 View My Work
-              </Button>
-              <Button
+              </MagneticButton>
+              <MagneticButton
                 onClick={() => scrollToSection('contact')}
-                variant="outline"
-                className="border-2 border-white/20 bg-white/5 hover:bg-white/10 text-white px-8 py-6 text-lg rounded-lg backdrop-blur-sm"
+                className="ag-btn-magnetic ag-btn-outline"
                 data-testid="contact-button"
               >
                 Get In Touch
-              </Button>
+              </MagneticButton>
             </div>
           </div>
         </div>
 
-        <button 
+        <button
           onClick={() => scrollToSection('skills')}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer z-10"
+          className="ag-scroll-indicator"
           data-testid="scroll-indicator"
+          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
         >
-          <ChevronDown className="w-8 h-8 text-pink-400" />
+          <ChevronDown className="w-6 h-6" style={{ color: '#06B6D4', animation: 'scrollDots 2s ease-in-out infinite' }} />
         </button>
       </section>
 
-      {/* Skills Section */}
-      <section id="skills" className="relative py-24 px-6" data-testid="skills-section">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 scroll-reveal">
-            <p className="text-purple-400 text-sm uppercase tracking-widest mb-4 font-semibold">What I Do</p>
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">Skills & Expertise</h2>
-            <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+      {/* ── Skills Section ──────────────────────────────────── */}
+      <section id="skills" style={{ position: 'relative', padding: '96px 24px', zIndex: 2 }} data-testid="skills-section">
+        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+          <div className="scroll-reveal" style={{ textAlign: 'center', marginBottom: 64 }}>
+            <p className="ag-section-label">What I Do</p>
+            <h2 className="ag-section-title">Skills & Expertise</h2>
+            <p className="ag-section-subtitle">
               Specialized in building end-to-end AI solutions from research to production deployment
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+            gap: 24
+          }}>
             {skills.map((skill, index) => (
-              <Card
+              <TiltCard
                 key={index}
-                className="scroll-reveal bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300 hover:-translate-y-1"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="scroll-reveal"
+                style={{ padding: 28, animationDelay: `${index * 100}ms` }}
                 data-testid={`skill-card-${index}`}
               >
-                <div className="text-pink-400 mb-4">{skill.icon}</div>
-                <h3 className="text-xl font-bold text-white mb-4">{skill.category}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {skill.items.map((item, i) => (
-                    <Badge
-                      key={i}
-                      variant="secondary"
-                      className="bg-purple-500/10 text-purple-300 border-purple-500/30 hover:bg-purple-500/20"
-                    >
-                      {item}
-                    </Badge>
-                  ))}
+                <div style={{ position: 'relative', zIndex: 2 }}>
+                  <div style={{ color: '#06B6D4', marginBottom: 16 }}>{skill.icon}</div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'white', marginBottom: 16 }}>
+                    {skill.category}
+                  </h3>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {skill.items.map((item, i) => (
+                      <span key={i} className="ag-skill-pill">{item}</span>
+                    ))}
+                  </div>
                 </div>
-              </Card>
+              </TiltCard>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Projects Section */}
-      <section id="projects" className="relative py-24 px-6" data-testid="projects-section">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 scroll-reveal">
-            <p className="text-pink-400 text-sm uppercase tracking-widest mb-4 font-semibold">My Work</p>
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">Featured Projects</h2>
+      {/* ── Projects Section ────────────────────────────────── */}
+      <section id="projects" style={{ position: 'relative', padding: '96px 24px', zIndex: 2 }} data-testid="projects-section">
+        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+          <div className="scroll-reveal" style={{ textAlign: 'center', marginBottom: 64 }}>
+            <p className="ag-section-label">My Work</p>
+            <h2 className="ag-section-title">Featured Projects</h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+            gap: 32
+          }}>
             {projects.map((project, index) => (
-              <Card
+              <TiltCard
                 key={project.id}
                 onClick={() => navigate(`/project/${project.slug}`)}
-                className="scroll-reveal bg-gradient-to-br from-zinc-900/90 to-zinc-800/90 backdrop-blur-sm border border-purple-500/30 p-8 hover:border-pink-500/50 hover:shadow-2xl hover:shadow-pink-500/20 transition-all duration-500 hover:-translate-y-2 group cursor-pointer"
-                style={{ animationDelay: `${index * 150}ms` }}
+                className="scroll-reveal"
+                style={{
+                  padding: 32,
+                  cursor: 'pointer',
+                  animationDelay: `${index * 150}ms`
+                }}
                 data-testid={`project-card-${project.id}`}
               >
-                <div className="text-6xl font-bold text-purple-500/20 mb-4">0{project.id}</div>
-                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-pink-400 transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3">
-                  {project.description.split('\n\n')[0]}
-                </p>
-                
-                <div className="mb-4">
-                  {project.highlights.slice(0, 2).map((highlight, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-pink-300 mb-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-pink-400" />
-                      {highlight}
-                    </div>
-                  ))}
-                </div>
+                <div style={{ position: 'relative', zIndex: 2 }}>
+                  <div className="ag-project-number">0{project.id}</div>
+                  <h3 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 700,
+                    color: 'white',
+                    marginBottom: 12,
+                    transition: 'color 0.3s ease'
+                  }}>
+                    {project.title}
+                  </h3>
+                  <p style={{ color: '#94A3B8', marginBottom: 16, lineHeight: 1.7 }} className="line-clamp-3">
+                    {project.description.split('\n\n')[0]}
+                  </p>
 
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tech.slice(0, 4).map((tech, i) => (
-                    <Badge key={i} className="bg-blue-500/10 text-blue-300 border-blue-500/30">
-                      {tech}
-                    </Badge>
-                  ))}
-                  {project.tech.length > 4 && (
-                    <Badge className="bg-blue-500/10 text-blue-300 border-blue-500/30">
-                      +{project.tech.length - 4} more
-                    </Badge>
-                  )}
-                </div>
+                  <div style={{ marginBottom: 16 }}>
+                    {project.highlights.slice(0, 2).map((highlight, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                        <div className="ag-highlight-dot" />
+                        <span style={{ fontSize: '0.85rem', color: '#67E8F9' }}>{highlight}</span>
+                      </div>
+                    ))}
+                  </div>
 
-                <div className="text-purple-400 text-sm font-medium flex items-center gap-2">
-                  View Details <ExternalLink className="w-4 h-4" />
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
+                    {project.tech.slice(0, 4).map((tech, i) => (
+                      <span key={i} className="ag-tech-badge">{tech}</span>
+                    ))}
+                    {project.tech.length > 4 && (
+                      <span className="ag-tech-badge">+{project.tech.length - 4} more</span>
+                    )}
+                  </div>
+
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    color: '#A78BFA'
+                  }}>
+                    View Details <ExternalLink className="w-4 h-4" />
+                  </div>
                 </div>
-              </Card>
+              </TiltCard>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Experience Section */}
-      <section id="experience" className="relative py-24 px-6" data-testid="experience-section">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16 scroll-reveal">
-            <p className="text-purple-400 text-sm uppercase tracking-widest mb-4 font-semibold">My Journey</p>
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">Experience & Education</h2>
+      {/* ── Experience Section ──────────────────────────────── */}
+      <section id="experience" style={{ position: 'relative', padding: '96px 24px', zIndex: 2 }} data-testid="experience-section">
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          <div className="scroll-reveal" style={{ textAlign: 'center', marginBottom: 64 }}>
+            <p className="ag-section-label">My Journey</p>
+            <h2 className="ag-section-title">Experience & Education</h2>
           </div>
 
-          <div className="relative">
-            <div className="absolute left-0 md:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-purple-500 via-pink-500 to-blue-500" />
+          <div style={{ position: 'relative' }}>
+            <div className="ag-timeline-line" />
 
             {experience.map((exp, index) => (
               <div
                 key={index}
-                className="scroll-reveal relative pl-8 md:pl-24 pb-12 last:pb-0"
-                style={{ animationDelay: `${index * 100}ms` }}
+                className="scroll-reveal"
+                style={{
+                  position: 'relative',
+                  paddingLeft: 48,
+                  paddingBottom: index === experience.length - 1 ? 0 : 48,
+                  animationDelay: `${index * 100}ms`
+                }}
                 data-testid={`experience-item-${index}`}
               >
-                <div className="absolute left-0 md:left-8 -translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-pink-500/50" />
+                <div className="ag-timeline-node" style={{ top: 24 }} />
 
-                <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="text-purple-400 mt-1">{exp.icon}</div>
-                    <div className="flex-1">
-                      <p className="text-pink-400 text-sm font-semibold mb-2">{exp.period}</p>
-                      <h3 className="text-xl font-bold text-white mb-1">{exp.role}</h3>
-                      <p className="text-gray-400 mb-2">{exp.company} • {exp.location}</p>
+                <TiltCard style={{ padding: 24 }}>
+                  <div style={{ position: 'relative', zIndex: 2 }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
+                      <div style={{ color: '#8B5CF6', marginTop: 4 }}>{exp.icon}</div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ color: '#06B6D4', fontSize: '0.85rem', fontWeight: 600, marginBottom: 8 }}>
+                          {exp.period}
+                        </p>
+                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'white', marginBottom: 4 }}>
+                          {exp.role}
+                        </h3>
+                        <p style={{ color: '#94A3B8', fontSize: '0.9rem' }}>
+                          {exp.company} • {exp.location}
+                        </p>
+                      </div>
                     </div>
+                    {exp.highlights.length > 0 && (
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        {exp.highlights.map((highlight, i) => (
+                          <li key={i} style={{
+                            color: '#94A3B8',
+                            fontSize: '0.85rem',
+                            lineHeight: 1.7,
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: 8,
+                          }}>
+                            <span className="ag-bullet">▸</span>
+                            <span>{highlight}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
-                  {exp.highlights.length > 0 && (
-                    <ul className="space-y-2">
-                      {exp.highlights.map((highlight, i) => (
-                        <li key={i} className="text-gray-400 text-sm leading-relaxed flex items-start gap-2">
-                          <span className="text-purple-400 mt-1">▸</span>
-                          <span>{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </Card>
+                </TiltCard>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="relative py-24 px-6" data-testid="contact-section">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16 scroll-reveal">
-            <p className="text-pink-400 text-sm uppercase tracking-widest mb-4 font-semibold">Get In Touch</p>
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">Let's Work Together</h2>
+      {/* ── Contact Section ─────────────────────────────────── */}
+      <section id="contact" style={{ position: 'relative', padding: '96px 24px', zIndex: 2 }} data-testid="contact-section">
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div className="scroll-reveal" style={{ textAlign: 'center', marginBottom: 64 }}>
+            <p className="ag-section-label">Get In Touch</p>
+            <h2 className="ag-section-title">Let's Work Together</h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="space-y-6 scroll-reveal">
-              <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all" data-testid="contact-email">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-lg bg-purple-500/10">
-                    <Mail className="w-6 h-6 text-purple-400" />
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+            gap: 32
+          }}>
+            {/* Contact Info */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {[
+                { icon: <Mail className="w-5 h-5" />, iconClass: 'ag-contact-icon-purple', label: 'Email', value: 'aryangupta.7263@gmail.com', href: 'mailto:aryangupta.7263@gmail.com', testId: 'contact-email' },
+                { icon: <Phone className="w-5 h-5" />, iconClass: 'ag-contact-icon-pink', label: 'Phone', value: '+91 7534090544', href: 'tel:+917534090544', testId: 'contact-phone' },
+                { icon: <MapPin className="w-5 h-5" />, iconClass: 'ag-contact-icon-cyan', label: 'Location', value: 'New Delhi, India', testId: 'contact-location' },
+                { icon: <Linkedin className="w-5 h-5" />, iconClass: 'ag-contact-icon-purple', label: 'LinkedIn', value: 'linkedin.com/in/aryangupta7263', href: 'https://www.linkedin.com/in/aryangupta7263', external: true, testId: 'contact-linkedin' },
+              ].map((item, i) => (
+                <TiltCard key={i} className="scroll-reveal" style={{ padding: 20 }} data-testid={item.testId}>
+                  <div style={{ position: 'relative', zIndex: 2, display: 'flex', alignItems: 'center', gap: 16 }}>
+                    <div className={`ag-contact-icon ${item.iconClass}`}>
+                      {item.icon}
+                    </div>
+                    <div>
+                      <p style={{ color: '#64748B', fontSize: '0.8rem', marginBottom: 4 }}>{item.label}</p>
+                      {item.href ? (
+                        <a
+                          href={item.href}
+                          target={item.external ? '_blank' : undefined}
+                          rel={item.external ? 'noopener noreferrer' : undefined}
+                          className="ag-link"
+                          style={{ color: 'white', fontWeight: 500 }}
+                        >
+                          {item.value}
+                        </a>
+                      ) : (
+                        <p style={{ color: 'white', fontWeight: 500, margin: 0 }}>{item.value}</p>
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Email</p>
-                    <a href="mailto:aryangupta.7263@gmail.com" className="text-white hover:text-purple-400 transition-colors">
-                      aryangupta.7263@gmail.com
-                    </a>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all" data-testid="contact-phone">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-lg bg-pink-500/10">
-                    <Phone className="w-6 h-6 text-pink-400" />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Phone</p>
-                    <a href="tel:+917534090544" className="text-white hover:text-pink-400 transition-colors">
-                      +91 7534090544
-                    </a>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all" data-testid="contact-location">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-lg bg-blue-500/10">
-                    <MapPin className="w-6 h-6 text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">Location</p>
-                    <p className="text-white">New Delhi, India</p>
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-6 hover:border-pink-500/50 transition-all" data-testid="contact-linkedin">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-lg bg-purple-500/10">
-                    <Linkedin className="w-6 h-6 text-purple-400" />
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm">LinkedIn</p>
-                    <a 
-                      href="https://www.linkedin.com/in/aryangupta7263" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-white hover:text-purple-400 transition-colors"
-                    >
-                      linkedin.com/in/aryangupta7263
-                    </a>
-                  </div>
-                </div>
-              </Card>
+                </TiltCard>
+              ))}
             </div>
 
-            <Card className="scroll-reveal bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8" data-testid="contact-form">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Your Name"
-                    required
-                    className="w-full px-4 py-3 bg-black/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500/50 focus:ring-1 focus:ring-pink-500/50 transition-all"
-                    data-testid="form-name"
-                  />
-                </div>
-                <div>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Your Email"
-                    required
-                    className="w-full px-4 py-3 bg-black/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500/50 focus:ring-1 focus:ring-pink-500/50 transition-all"
-                    data-testid="form-email"
-                  />
-                </div>
-                <div>
-                  <textarea
-                    name="message"
-                    placeholder="Your Message"
-                    rows="5"
-                    required
-                    className="w-full px-4 py-3 bg-black/50 border border-purple-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-pink-500/50 focus:ring-1 focus:ring-pink-500/50 transition-all resize-none"
-                    data-testid="form-message"
-                  />
-                </div>
-                <Button
+            {/* Contact Form */}
+            <TiltCard className="scroll-reveal" style={{ padding: 32 }} data-testid="contact-form">
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20, position: 'relative', zIndex: 2 }}>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  required
+                  className="ag-input"
+                  data-testid="form-name"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  required
+                  className="ag-input"
+                  data-testid="form-email"
+                />
+                <textarea
+                  name="message"
+                  placeholder="Your Message"
+                  rows="5"
+                  required
+                  className="ag-input"
+                  style={{ resize: 'none' }}
+                  data-testid="form-message"
+                />
+                <MagneticButton
                   type="submit"
                   disabled={formStatus === 'sending'}
-                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-3 rounded-lg shadow-lg hover:shadow-purple-500/50 transition-all flex items-center justify-center gap-2"
+                  className={`ag-btn-magnetic ag-btn-primary ${formStatus === 'success' ? 'ag-success-glow' : ''}`}
+                  style={{ width: '100%', justifyContent: 'center' }}
                   data-testid="form-submit"
                 >
                   {formStatus === 'sending' ? (
@@ -708,17 +1136,17 @@ function Portfolio() {
                       Send Message
                     </>
                   )}
-                </Button>
+                </MagneticButton>
               </form>
-            </Card>
+            </TiltCard>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative py-8 px-6 border-t border-white/5" data-testid="footer">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-500">
+      {/* ── Footer ──────────────────────────────────────────── */}
+      <footer className="ag-footer" style={{ position: 'relative', padding: '32px 24px', zIndex: 2 }} data-testid="footer">
+        <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ color: '#475569', fontSize: '0.85rem' }}>
             © 2025 Aryan Gupta. Built with React & Tailwind CSS.
           </p>
         </div>
@@ -726,6 +1154,10 @@ function Portfolio() {
     </div>
   );
 }
+
+// ═══════════════════════════════════════════════════════════════
+// PROJECT DETAIL PAGE
+// ═══════════════════════════════════════════════════════════════
 
 function ProjectDetail() {
   const { slug } = useParams();
@@ -754,39 +1186,73 @@ function ProjectDetail() {
 
   if (!project) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-4">Project Not Found</h1>
-          <Button onClick={() => navigate('/')} className="bg-gradient-to-r from-purple-500 to-pink-500">
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#0A0A0F'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'white', marginBottom: 16 }}>
+            Project Not Found
+          </h1>
+          <MagneticButton
+            onClick={() => navigate('/')}
+            className="ag-btn-magnetic ag-btn-primary"
+          >
             Go Back Home
-          </Button>
+          </MagneticButton>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="App min-h-screen">
-      {/* Background */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 bg-black" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse-slower" />
-        <div className="grid-overlay" />
-      </div>
+    <div className="App" style={{ minHeight: '100vh' }}>
+      <AnimatedBackground />
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-lg border-b border-purple-500/20">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button 
+      <nav className="ag-nav ag-nav-scrolled">
+        <div style={{
+          maxWidth: 1280,
+          margin: '0 auto',
+          padding: '16px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
+          <button
             onClick={() => navigate('/')}
-            className="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent hover:scale-105 transition-transform"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '1.6rem',
+              fontWeight: 800
+            }}
+            className="ag-gradient-text"
           >
-            ARYAN<span className="text-white/50 font-light">.ai</span>
+            ARYAN<span style={{
+              WebkitTextFillColor: 'rgba(148, 163, 184, 0.5)',
+              fontWeight: 300
+            }}>.ai</span>
           </button>
           <button
             onClick={handleBackClick}
-            className="flex items-center gap-2 text-purple-400 hover:text-pink-400 transition-colors"
+            className="ag-link"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              color: '#A78BFA',
+              fontSize: '0.9rem',
+              fontWeight: 500,
+              fontFamily: 'inherit'
+            }}
           >
             <ArrowLeft className="w-5 h-5" />
             Back to Portfolio
@@ -795,43 +1261,49 @@ function ProjectDetail() {
       </nav>
 
       {/* Project Hero */}
-      <section className="relative pt-32 pb-16 px-6">
-        <div className="max-w-5xl mx-auto text-center z-10 relative">
-          <div className="mb-6 flex items-center justify-center gap-4 flex-wrap">
-            <Badge className="bg-purple-500/20 text-purple-300 border-purple-500/50 px-4 py-1">
+      <section style={{ position: 'relative', paddingTop: 128, paddingBottom: 64, padding: '128px 24px 64px' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center', zIndex: 10, position: 'relative' }}>
+          <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <span className="ag-tech-badge" style={{ padding: '6px 16px', fontSize: '0.85rem' }}>
               {project.category}
-            </Badge>
-            <Badge className="bg-pink-500/20 text-pink-300 border-pink-500/50 px-4 py-1">
+            </span>
+            <span className="ag-skill-pill" style={{ background: 'rgba(139, 92, 246, 0.08)' }}>
               {project.year}
-            </Badge>
+            </span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h1 className="ag-gradient-text" style={{
+            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+            fontWeight: 900,
+            marginBottom: 24,
+            lineHeight: 1.1
+          }}>
             {project.title}
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p style={{ fontSize: 'clamp(1.1rem, 2vw, 1.35rem)', color: '#94A3B8', marginBottom: 32, maxWidth: 700, margin: '0 auto 32px' }}>
             {project.tagline}
           </p>
-          
-          {/* GitHub and Live Demo Buttons */}
-          <div className="flex items-center justify-center gap-6 flex-wrap mb-4">
+
+          <div className="ag-cta-glow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, flexWrap: 'wrap', marginBottom: 16 }}>
             <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-purple-500/50 hover:scale-105"
+              className="ag-btn-magnetic ag-btn-primary"
+              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}
               data-testid="project-github-button"
             >
-              <Github className="w-6 h-6" />
+              <Github className="w-5 h-5" />
               View Code
             </a>
             <a
               href={project.demo}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg rounded-xl font-semibold transition-all shadow-lg hover:shadow-pink-500/50 hover:scale-105"
+              className="ag-btn-magnetic ag-btn-outline"
+              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}
               data-testid="project-demo-button"
             >
-              <ExternalLink className="w-6 h-6" />
+              <ExternalLink className="w-5 h-5" />
               Live Demo
             </a>
           </div>
@@ -839,54 +1311,103 @@ function ProjectDetail() {
       </section>
 
       {/* Project Content */}
-      <section className="relative py-16 px-6">
-        <div className="max-w-5xl mx-auto z-10 relative">
-          {/* Description */}
-          <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8 mb-8">
-            <h2 className="text-3xl font-bold text-white mb-6 border-l-4 border-purple-500 pl-4">Overview</h2>
-            {project.description.split('\n\n').map((para, i) => (
-              <p key={i} className="text-gray-300 text-lg leading-relaxed mb-4 last:mb-0">
-                {para}
-              </p>
-            ))}
-          </Card>
+      <section style={{ position: 'relative', padding: '64px 24px', zIndex: 2 }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
+          {/* Overview */}
+          <TiltCard style={{ padding: 32, marginBottom: 32 }}>
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <h2 style={{
+                fontSize: '1.75rem',
+                fontWeight: 800,
+                color: 'white',
+                marginBottom: 24,
+                paddingLeft: 16,
+                borderLeft: '3px solid #8B5CF6'
+              }}>
+                Overview
+              </h2>
+              {project.description.split('\n\n').map((para, i) => (
+                <p key={i} style={{ color: '#CBD5E1', fontSize: '1.05rem', lineHeight: 1.8, marginBottom: i < project.description.split('\n\n').length - 1 ? 16 : 0 }}>
+                  {para}
+                </p>
+              ))}
+            </div>
+          </TiltCard>
 
           {/* Key Features */}
-          <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8 mb-8">
-            <h2 className="text-3xl font-bold text-white mb-6 border-l-4 border-pink-500 pl-4">Key Features</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {project.features.map((feature, i) => (
-                <Card key={i} className="bg-black/50 border border-purple-500/20 p-6 hover:border-pink-500/50 transition-all">
-                  <h3 className="text-xl font-bold text-pink-400 mb-3">{feature.title}</h3>
-                  <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
-                </Card>
-              ))}
+          <TiltCard style={{ padding: 32, marginBottom: 32 }}>
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <h2 style={{
+                fontSize: '1.75rem',
+                fontWeight: 800,
+                color: 'white',
+                marginBottom: 24,
+                paddingLeft: 16,
+                borderLeft: '3px solid #06B6D4'
+              }}>
+                Key Features
+              </h2>
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+                gap: 20
+              }}>
+                {project.features.map((feature, i) => (
+                  <div key={i} className="ag-card" style={{ padding: 24, borderRadius: 12 }}>
+                    <div style={{ position: 'relative', zIndex: 2 }}>
+                      <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#06B6D4', marginBottom: 12 }}>
+                        {feature.title}
+                      </h3>
+                      <p style={{ color: '#94A3B8', lineHeight: 1.7, fontSize: '0.9rem' }}>
+                        {feature.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </Card>
+          </TiltCard>
 
           {/* Tech Stack */}
-          <Card className="bg-zinc-900/80 backdrop-blur-sm border border-purple-500/30 p-8">
-            <h2 className="text-3xl font-bold text-white mb-6 border-l-4 border-blue-500 pl-4">Tech Stack</h2>
-            <div className="flex flex-wrap gap-3">
-              {project.tech.map((tech, i) => (
-                <Badge key={i} className="bg-blue-500/10 text-blue-300 border-blue-500/30 px-4 py-2 text-base">
-                  {tech}
-                </Badge>
-              ))}
+          <TiltCard style={{ padding: 32 }}>
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <h2 style={{
+                fontSize: '1.75rem',
+                fontWeight: 800,
+                color: 'white',
+                marginBottom: 24,
+                paddingLeft: 16,
+                borderLeft: '3px solid #A78BFA'
+              }}>
+                Tech Stack
+              </h2>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                {project.tech.map((tech, i) => (
+                  <span key={i} className="ag-tech-badge" style={{ padding: '8px 18px', fontSize: '0.9rem' }}>
+                    {tech}
+                  </span>
+                ))}
+              </div>
             </div>
-          </Card>
+          </TiltCard>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative py-8 px-6 border-t border-white/5 mt-16">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-500">© 2025 Aryan Gupta. Built with React & Tailwind CSS.</p>
+      <footer className="ag-footer" style={{ position: 'relative', padding: '32px 24px', marginTop: 64, zIndex: 2 }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ color: '#475569', fontSize: '0.85rem' }}>
+            © 2025 Aryan Gupta. Built with React & Tailwind CSS.
+          </p>
         </div>
       </footer>
     </div>
   );
 }
+
+// ═══════════════════════════════════════════════════════════════
+// APP ROOT
+// ═══════════════════════════════════════════════════════════════
 
 function App() {
   return (

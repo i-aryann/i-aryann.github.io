@@ -1051,7 +1051,7 @@ function ProjectDetail() {
                   });
                   setShowArchModal(true);
                 }}
-                className="flex items-center gap-2 px-6 py-2.5 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-sm rounded-full font-medium transition-all"
+                className="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white px-6 py-2.5 rounded-full text-sm font-medium transition-all"
                 data-testid="project-architecture-button"
               >
                 <Layers className="w-4 h-4" />
