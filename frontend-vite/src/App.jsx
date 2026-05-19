@@ -473,7 +473,7 @@ function Portfolio() {
                 Start a Conversation
               </button>
               <a
-                href={`/Resume.pdf?t=${Date.now()}`}
+                href={`/Aryan Gupta AI Engineer Resume.pdf?t=${Date.now()}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackEvent('resume_viewed', { event_category: 'Resume', event_label: 'Desktop Nav' })}
@@ -524,7 +524,7 @@ function Portfolio() {
                   Start a Conversation
                 </button>
                 <a
-                  href={`/Resume.pdf?t=${Date.now()}`}
+                  href={`/Aryan Gupta AI Engineer Resume.pdf?t=${Date.now()}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => {
